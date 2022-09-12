@@ -11,8 +11,9 @@ namespace Analizador_sintático
     {
         static void Main(string[] args)
         {
-            SyntaticAnalizer algo = new SyntaticAnalizer();
+            Sintatico algo = new Sintatico();
+            
+            Console.WriteLine(algo.SyntaticAnalizer());
         }
-
     }
 }
