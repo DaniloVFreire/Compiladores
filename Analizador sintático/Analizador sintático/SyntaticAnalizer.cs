@@ -4,10 +4,9 @@ namespace Analizador_sintático
 {
     internal class Sintatico
     {
-        public string SyntaticAnalizer()
+        public string SyntaticAnalizer(string s)
         {
-            string s = null;
-            s = Console.ReadLine();
+            
             string R = FAllyGroup(s);
             
             return R;
@@ -77,7 +76,7 @@ namespace Analizador_sintático
         public string FAllyGroup(string s)
         {
             char separator = ',';
-            String[] LAlly = s.Split (separator, StringSplitOptions.None);
+            String[] LAlly = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             
             foreach (String a in LAlly)
             {

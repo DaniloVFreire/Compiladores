@@ -11,9 +11,10 @@ namespace Analizador_sintático
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Entre com a string a ser identificada");
             Sintatico algo = new Sintatico();
-            
-            Console.WriteLine(algo.SyntaticAnalizer());
+            string s = Console.ReadLine();
+            Console.WriteLine(SyntaticAnalizer(s));
         }
     }
 }
