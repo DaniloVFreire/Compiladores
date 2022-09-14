@@ -1,27 +1,50 @@
 ﻿using System;
-
+public enum TokenTypes
+{
+	action,
+	ally,
+	ask,
+	condition,
+	enemy,
+	objects,
+	separator,
+	delimiter,
+	error,
+	open_parentesis,
+	close_parentesis,
+}
 public class Token
 {
 	private Tuple<int,int> position;
 	private string value;
-	private string type;
+	private TokenTypes type;
 	private string scope;
 	private int dummyPointer;
-	public Token(Tuple<int,int> _position, string _value, string _type,
-		string _scope, int _dummyPointer)
+	public Token(Tuple<int,int> _position, string _value, TokenTypes _type)
 	{
 		this.position = _position;
 		this.value = _value;
 		this.type = _type;
-		this.scope = _scope;
-		this.dummyPointer = _dummyPointer;
+		//this.scope = _scope;
+		//this.dummyPointer = _dummyPointer;
+		//string _scope, int _dummyPointer
 	}
-    public string getScope()
+	public string getScope()
     {
 		return this.scope;
     }
 	public void setScope(string _scope)
 	{
 		this.scope = _scope;
+	}
+
+	private string formatString()
+    {
+		return "<posição:" + this.position + ", lexema: '" + this.value + "', tipo do lexema: " + this.type + ">";
+	}
+
+	public override string ToString()
+	{
+		return formatString();
 	}
 }

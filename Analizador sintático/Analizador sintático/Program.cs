@@ -11,7 +11,7 @@ namespace CompilerS
     {
         static void Main(string[] args)
         {
-            Compiler compiler_instance = new Compiler();
+            Compiler compiler_instance = new Compiler(true);
             compiler_instance.RunCompilation();
         }
     }

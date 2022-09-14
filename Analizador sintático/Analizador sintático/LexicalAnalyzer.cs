@@ -1,29 +1,165 @@
 ﻿using System;
 using System.Collections.Generic;
+using static TokenTypes;
 
-public enum TokenClasses
-{
-    action,
-    ally,
-    ask,
-    condition,
-    enemy,
-    objects,
-}
 public class Lexical_analizer
 {
     private List<Token> token_list;
+    private bool verbose;
+    private int stringInsertionPosition;
+    private int wordStartPosition;
+    private string word;
+    bool Error;
     public Lexical_analizer()
 	{
-        this.token_list = new List<Token>();
-
+        constructorConvergence();
+        this.verbose = false;
     }
-    public void RunLexicalAnalizer(string input_line)
+    public Lexical_analizer(bool _verbose)
     {
+        constructorConvergence();
+        this.verbose = _verbose;
+    }
+    void constructorConvergence()
+    {
+        this.token_list = new List<Token>();
+        stringInsertionPosition = 0;
+        wordStartPosition = 0;
+        word = "";
+        Error = false;
+    }
+    public void RunLexicalAnalizer(string input_line, int line)
+    {
+        if(verbose) Console.WriteLine("Lendo linha");
+        for (int i = 0 ; i<input_line.Length ; ++i )
+        {
+            if (input_line[i] != ' ' && String.IsNullOrEmpty(word))
+            {//inicializa a cadeia do token em word
+                this.wordStartPosition = i;
+                if (verbose) Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+                
+                this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
+                this.stringInsertionPosition++;
 
+                if (input_line[i] == '.' || input_line[i] == ',' ||
+                input_line[i] == '(' || input_line[i] == ')')
+                {//se o símbolo incial da cadeia for um "fechador"
+                    generateAndAppendToken(line, wordStartPosition, word);
+                }
+            }
+            else if (!String.IsNullOrEmpty(word) && 
+                !(input_line[i] == ' ' || input_line[i] == '.'|| input_line[i] == ','||
+                input_line[i] == '('|| input_line[i] == ')'))
+            {//continuando a cadeia do token em word
+                if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
+
+                this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
+                this.stringInsertionPosition++;
+            }
+            else if (!String.IsNullOrEmpty(word))
+            {//finaliza a cadeia do token
+                if (verbose) Console.WriteLine("token encontrado: " + word);
+                if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
+
+                generateAndAppendToken(line, wordStartPosition, word);
+                generateAndAppendToken(line, wordStartPosition, Char.ToString(input_line[i]));
+            }
+            if (Error)
+            {
+                Console.WriteLine("Finalizando análize lexica com erro");
+                break;
+            }
+        }
+        if (!String.IsNullOrEmpty(word))
+        {//finaliza a cadeia do token
+            if (verbose) Console.WriteLine("token encontrado fora do loop: " + word);
+
+            generateAndAppendToken(line, wordStartPosition, word);
+        }
+    }
+
+    private TokenTypes defineTokentipe(string lexeme)
+    {
+        if (lexeme.Equals(","))
+        {
+            return separator;
+        }
+        else if (lexeme.Equals("."))
+        {
+            return delimiter;
+        }
+        else if (lexeme.Equals("("))
+        {
+            return open_parentesis;
+        }
+        else if (lexeme.Equals(")"))
+        {
+            return close_parentesis;
+        }
+        else if (lexeme.Contains("allyN") &&
+            Char.IsDigit(lexeme[lexeme.Length - 2]) &&
+            Char.IsLower(lexeme[lexeme.Length - 1]))
+        {
+            return ally;
+        }
+        else if (lexeme.Contains("enemyN") &&
+            Char.IsDigit(lexeme[lexeme.Length - 2]) &&
+            Char.IsLower(lexeme[lexeme.Length - 1]))
+        {
+            return enemy;
+        }
+        else if (lexeme.Contains("moveTowards") ||
+            lexeme.Contains("explore") ||
+            lexeme.Contains("sendBall") ||
+            lexeme.Contains("sayOk") ||
+            lexeme.Contains("sayNo") ||
+            lexeme.Contains("sayPosition") ||
+            lexeme.Contains("help"))
+        {
+            return action;
+        }
+        else if (lexeme.Contains("carryingBall") ||
+            lexeme.Contains("marked") ||
+            lexeme.Contains("position") ||
+            lexeme.Contains("neighbors"))
+        {
+            return condition;
+        }
+        else if (lexeme.Contains("askAction") ||
+            lexeme.Contains("askInfo"))
+        {
+            return ask;
+        }
+        else
+        {
+            Console.WriteLine("Token Com erro/não definido: " + word);
+            this.Error=true;
+            clearTokenList();
+            return error;
+        }
+    }
+
+    private void generateAndAppendToken(int line, int column, string lexem)
+    {//recebendo dados iniciais de geração do token para unificar a geração
+     //e evitar duplicidade de código
+
+        //Adicionando um a coluna e lina pois não tem posição 0,0 em um texto e sim 1,1
+        Tuple<int, int> tokenPosition = new Tuple<int, int>(line+1, column+1);
+
+        //Adicionando token a lista
+        this.token_list.Add(new Token(tokenPosition, lexem, defineTokentipe(lexem)));
+
+        //reiniciando os separadores dos lexemas
+        this.stringInsertionPosition = 0;
+        this.wordStartPosition = 0;
+        this.word = "";
     }
     public List<Token> getTokenList()
-    {
+    {//retorna a lista de tokens do estado atual
         return this.token_list;
+    }
+    private void clearTokenList()
+    {//retorna a lista de tokens do estado atual
+        this.token_list = new List<Token>();
     }
 }
