@@ -44,6 +44,7 @@ public class Lexical_analizer
                 if (input_line[i] == '.' || input_line[i] == ',' ||
                 input_line[i] == '(' || input_line[i] == ')')
                 {//se o símbolo incial da cadeia for um "fechador"
+                    if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
                     generateAndAppendToken(line, wordStartPosition, word);
                 }
             }
@@ -96,46 +97,49 @@ public class Lexical_analizer
         {
             return close_parentesis;
         }
-        else if (lexeme.Contains("allyN") &&
+        else if (lexeme.Contains("allyN") && lexeme.Length == 7 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
             Char.IsLower(lexeme[lexeme.Length - 1]))
         {
             return ally;
         }
-        else if (lexeme.Contains("enemyN") &&
+        else if (lexeme.Contains("enemyN") && lexeme.Length == 8 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
             Char.IsLower(lexeme[lexeme.Length - 1]))
         {
             return enemy;
         }
-        else if (lexeme.Contains("moveTowards") ||
-            lexeme.Contains("explore") ||
-            lexeme.Contains("sendBall") ||
-            lexeme.Contains("sayOk") ||
-            lexeme.Contains("sayNo") ||
-            lexeme.Contains("sayPosition") ||
-            lexeme.Contains("help"))
+        else if ((lexeme.Contains("moveTowards") && lexeme.Length == 11) ||
+            (lexeme.Contains("explore") && lexeme.Length == 7) ||
+            (lexeme.Contains("sendBall") && lexeme.Length == 8) ||
+            (lexeme.Contains("sayOk") && lexeme.Length == 5) ||
+            (lexeme.Contains("sayNo") && lexeme.Length == 5) ||
+            (lexeme.Contains("sayPosition") && lexeme.Length == 11) ||
+            (lexeme.Contains("help") && lexeme.Length == 4))
         {
             return action;
         }
-        else if (lexeme.Contains("carryingBall") ||
-            lexeme.Contains("marked") ||
-            lexeme.Contains("position") ||
-            lexeme.Contains("neighbors"))
+        else if ((lexeme.Contains("carryingBall") && lexeme.Length == 12)||
+            (lexeme.Contains("marked") && lexeme.Length == 6) ||
+            (lexeme.Contains("position") && lexeme.Length == 8) ||
+            (lexeme.Contains("neighbors") && lexeme.Length == 9))
         {
             return condition;
         }
-        else if (lexeme.Contains("askAction") ||
-            lexeme.Contains("askInfo"))
+        else if ((lexeme.Contains("askAction") && lexeme.Length == 9) ||
+            (lexeme.Contains("askInfo") && lexeme.Length == 7))
         {
             return ask;
         }
         else
         {
             Console.WriteLine("Token Com erro/não definido: " + word);
-            this.Error=true;
-            clearTokenList();
+
+            //para parar caso encontre erro descomente as duas linhas abaixo
+            //this.Error=true;
+            //clearTokenList();
             return error;
+
         }
     }
 
