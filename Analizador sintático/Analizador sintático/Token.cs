@@ -12,6 +12,7 @@ public enum TokenTypes
 	error,
 	open_parentesis,
 	close_parentesis,
+	self,
 }
 public class Token
 {

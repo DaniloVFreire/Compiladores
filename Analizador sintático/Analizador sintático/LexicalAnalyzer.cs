@@ -97,6 +97,10 @@ public class Lexical_analizer
         {
             return close_parentesis;
         }
+        else if (lexeme.Equals(" "))
+        {
+            return delimiter;
+        }
         else if (lexeme.Contains("allyN") && lexeme.Length == 7 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
             Char.IsLower(lexeme[lexeme.Length - 1]))
@@ -109,27 +113,32 @@ public class Lexical_analizer
         {
             return enemy;
         }
-        else if ((lexeme.Contains("moveTowards") && lexeme.Length == 11) ||
-            (lexeme.Contains("explore") && lexeme.Length == 7) ||
-            (lexeme.Contains("sendBall") && lexeme.Length == 8) ||
-            (lexeme.Contains("sayOk") && lexeme.Length == 5) ||
-            (lexeme.Contains("sayNo") && lexeme.Length == 5) ||
-            (lexeme.Contains("sayPosition") && lexeme.Length == 11) ||
-            (lexeme.Contains("help") && lexeme.Length == 4))
+        else if (lexeme.Equals("moveTowards") ||
+            lexeme.Equals("explore") ||
+            lexeme.Equals("sendBall") ||
+            lexeme.Equals("sayOk") ||
+            lexeme.Equals("sayNo") ||
+            lexeme.Equals("sayPosition") ||
+            lexeme.Equals("help"))
         {
             return action;
         }
-        else if ((lexeme.Contains("carryingBall") && lexeme.Length == 12)||
-            (lexeme.Contains("marked") && lexeme.Length == 6) ||
-            (lexeme.Contains("position") && lexeme.Length == 8) ||
-            (lexeme.Contains("neighbors") && lexeme.Length == 9))
+        else if (lexeme.Equals("carryingBall") || lexeme.Contains("marked") ||
+            lexeme.Contains("position") || lexeme.Contains("neighbors"))
         {
             return condition;
         }
-        else if ((lexeme.Contains("askAction") && lexeme.Length == 9) ||
-            (lexeme.Contains("askInfo") && lexeme.Length == 7))
+        else if (lexeme.Equals("askAction") || lexeme.Equals("askInfo"))
         {
             return ask;
+        }
+        else if (lexeme.Equals("allyGoal") || lexeme.Equals("enemyGoal"))
+        {
+            return objects;
+        }
+        else if (lexeme.Equals("self"))
+        {
+            return self;
         }
         else
         {
