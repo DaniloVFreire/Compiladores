@@ -13,6 +13,7 @@ public enum TokenTypes
 	open_parentesis,
 	close_parentesis,
 	self,
+	number,
 }
 public class Token
 {

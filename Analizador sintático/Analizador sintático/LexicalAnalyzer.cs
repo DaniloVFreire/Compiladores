@@ -28,6 +28,23 @@ public class Lexical_analizer
         word = "";
         Error = false;
     }
+    private bool CheckNumber(string s)
+    {
+        if (s.Equals("0") || 
+            s.Equals("1") ||
+            s.Equals("2") ||
+            s.Equals("3") ||
+            s.Equals("4") ||
+            s.Equals("5") ||
+            s.Equals("6") ||
+            s.Equals("7") ||
+            s.Equals("8") ||
+            s.Equals("9"))
+        {
+            return true;
+        }
+        return false;
+    }
     public void RunLexicalAnalizer(string input_line, int line)
     {
         if(verbose) Console.WriteLine("Lendo linha");
@@ -100,6 +117,10 @@ public class Lexical_analizer
         else if (lexeme.Equals(" "))
         {
             return delimiter;
+        }
+        else if (CheckNumber(lexeme))
+        {
+            return number;
         }
         else if (lexeme.Contains("allyN") && lexeme.Length == 7 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
