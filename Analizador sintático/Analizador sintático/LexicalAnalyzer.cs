@@ -103,13 +103,13 @@ public class Lexical_analizer
         }
         else if (lexeme.Contains("allyN") && lexeme.Length == 7 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
-            Char.IsLower(lexeme[lexeme.Length - 1]))
+            Char.IsDigit(lexeme[lexeme.Length - 1]))
         {
             return ally;
         }
         else if (lexeme.Contains("enemyN") && lexeme.Length == 8 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
-            Char.IsLower(lexeme[lexeme.Length - 1]))
+            Char.IsDigit(lexeme[lexeme.Length - 1]))
         {
             return enemy;
         }
