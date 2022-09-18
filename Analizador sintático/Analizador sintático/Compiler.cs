@@ -22,32 +22,29 @@ public class Compiler
         Syntatic syntatic_instance = new Syntatic();
         string inputLine = "";
         int line_counter=0;
-        while (true)
-        {
-            inputLine = Console.ReadLine();
+
+        inputLine = System.IO.File.ReadAllText(@"C:\Users\Zadhart\Desktop\Compiladores-main\Analizador sintático\Analizador sintático\WriteText.txt").Replace(Environment.NewLine, "");
             
-            if (!String.IsNullOrEmpty(inputLine))
+        if (!String.IsNullOrEmpty(inputLine))
             {//Recebimento de uma string e envio pra processamento pelo analizador lexico
                 lexical_analizer_instance.RunLexicalAnalizer(inputLine, line_counter);
                 line_counter++;
             }
-            else
-            {//Finalização da análize lexica
-                if (verbose) Console.WriteLine("Fim da análize léxica");
+
+        //if (verbose) Console.WriteLine("Fim da análize léxica");
 
                 this.token_list = lexical_analizer_instance.getTokenList();
                 if (verbose && token_list.Count>0)
                 {//mostra a lista recebida do analizador léxico
-                    Console.WriteLine("Tokens recebidos no compilador");
+                    //Console.WriteLine("Tokens recebidos no compilador");
                     foreach (var token in token_list)
                     {
                         Console.WriteLine(token);
                     }
                     Console.ReadLine();
                 }
-                break;
-            }
+  
+         return 0;
         }
-        return 0;
-    }
+    
 }

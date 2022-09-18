@@ -47,13 +47,13 @@ public class Lexical_analizer
     }
     public void RunLexicalAnalizer(string input_line, int line)
     {
-        if(verbose) Console.WriteLine("Lendo linha");
+        //if(verbose) Console.WriteLine("Lendo linha");
         for (int i = 0 ; i<input_line.Length ; ++i )
         {
             if (input_line[i] != ' ' && String.IsNullOrEmpty(word))
             {//inicializa a cadeia do token em word
                 this.wordStartPosition = i;
-                if (verbose) Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+                //if (verbose) Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
                 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
@@ -61,7 +61,7 @@ public class Lexical_analizer
                 if (input_line[i] == '.' || input_line[i] == ',' ||
                 input_line[i] == '(' || input_line[i] == ')')
                 {//se o símbolo incial da cadeia for um "fechador"
-                    if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
+                    //if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
                     generateAndAppendToken(line, wordStartPosition, word);
                 }
             }
@@ -69,15 +69,15 @@ public class Lexical_analizer
                 !(input_line[i] == ' ' || input_line[i] == '.'|| input_line[i] == ','||
                 input_line[i] == '('|| input_line[i] == ')'))
             {//continuando a cadeia do token em word
-                if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
+                //if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
             }
             else if (!String.IsNullOrEmpty(word))
             {//finaliza a cadeia do token
-                if (verbose) Console.WriteLine("token encontrado: " + word);
-                if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
+                //if (verbose) Console.WriteLine("token encontrado: " + word);
+                //if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
 
                 generateAndAppendToken(line, wordStartPosition, word);
                 generateAndAppendToken(line, wordStartPosition, Char.ToString(input_line[i]));
@@ -90,7 +90,7 @@ public class Lexical_analizer
         }
         if (!String.IsNullOrEmpty(word))
         {//finaliza a cadeia do token
-            if (verbose) Console.WriteLine("token encontrado fora do loop: " + word);
+            //if (verbose) Console.WriteLine("token encontrado fora do loop: " + word);
 
             generateAndAppendToken(line, wordStartPosition, word);
         }
