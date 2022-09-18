@@ -80,7 +80,7 @@ public class Lexical_analizer
                 //if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
 
                 generateAndAppendToken(line, wordStartPosition, word);
-                generateAndAppendToken(line, wordStartPosition, Char.ToString(input_line[i]));
+                generateAndAppendToken(line, wordStartPosition + word.Length, Char.ToString(input_line[i]));
             }
             if (Error)
             {
