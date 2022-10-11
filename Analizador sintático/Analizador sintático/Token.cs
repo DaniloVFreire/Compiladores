@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 public enum TokenTypes
 {
 	action,
@@ -12,6 +12,8 @@ public enum TokenTypes
 	error,
 	open_parentesis,
 	close_parentesis,
+	self,
+	number,
 }
 public class Token
 {

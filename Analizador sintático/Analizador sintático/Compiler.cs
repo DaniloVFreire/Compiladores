@@ -20,34 +20,37 @@ public class Compiler
     {
         Lexical_analizer lexical_analizer_instance = new Lexical_analizer(verbose);
         Syntatic syntatic_instance = new Syntatic();
-        string inputLine = "";
+        string[] archive_lines;
         int line_counter=0;
-        while (true)
+
+        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\danil\Documents\GitHub\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
+
+        foreach (string input_line in archive_lines)
         {
-            inputLine = Console.ReadLine();
-            
-            if (!String.IsNullOrEmpty(inputLine))
+            Console.WriteLine(input_line);
+            Console.WriteLine(input_line.Length);
+            if (!String.IsNullOrEmpty(input_line))
             {//Recebimento de uma string e envio pra processamento pelo analizador lexico
-                lexical_analizer_instance.RunLexicalAnalizer(inputLine, line_counter);
+                lexical_analizer_instance.RunLexicalAnalizer(input_line, line_counter);
                 line_counter++;
             }
-            else
-            {//Finalização da análize lexica
-                if (verbose) Console.WriteLine("Fim da análize léxica");
 
-                this.token_list = lexical_analizer_instance.getTokenList();
-                if (verbose && token_list.Count>0)
-                {//mostra a lista recebida do analizador léxico
-                    Console.WriteLine("Tokens recebidos no compilador");
-                    foreach (var token in token_list)
-                    {
-                        Console.WriteLine(token);
-                    }
-                    Console.ReadLine();
-                }
-                break;
-            }
+            //if (verbose) Console.WriteLine("Fim da análize léxica");
         }
+
+        this.token_list = lexical_analizer_instance.getTokenList();
+        if (verbose && token_list.Count > 0)
+        {//mostra a lista recebida do analizador léxico
+         //Console.WriteLine("Tokens recebidos no compilador");
+            foreach (var token in token_list)
+            {
+                Console.WriteLine(token);
+            }
+            Console.ReadLine();
+        }
+
+
         return 0;
-    }
+        }
+    
 }

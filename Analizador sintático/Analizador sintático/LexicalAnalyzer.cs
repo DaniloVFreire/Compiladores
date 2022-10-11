@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using static TokenTypes;
 
@@ -28,15 +28,32 @@ public class Lexical_analizer
         word = "";
         Error = false;
     }
+    private bool CheckNumber(string s)
+    {
+        if (s.Equals("0") || 
+            s.Equals("1") ||
+            s.Equals("2") ||
+            s.Equals("3") ||
+            s.Equals("4") ||
+            s.Equals("5") ||
+            s.Equals("6") ||
+            s.Equals("7") ||
+            s.Equals("8") ||
+            s.Equals("9"))
+        {
+            return true;
+        }
+        return false;
+    }
     public void RunLexicalAnalizer(string input_line, int line)
     {
-        if(verbose) Console.WriteLine("Lendo linha");
+        //if(verbose) Console.WriteLine("Lendo linha");
         for (int i = 0 ; i<input_line.Length ; ++i )
         {
             if (input_line[i] != ' ' && String.IsNullOrEmpty(word))
             {//inicializa a cadeia do token em word
                 this.wordStartPosition = i;
-                if (verbose) Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+               // Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
                 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
@@ -44,26 +61,26 @@ public class Lexical_analizer
                 if (input_line[i] == '.' || input_line[i] == ',' ||
                 input_line[i] == '(' || input_line[i] == ')')
                 {//se o símbolo incial da cadeia for um "fechador"
-                    if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
-                    generateAndAppendToken(line, wordStartPosition, word);
+                    //Console.WriteLine("cadeia de tamanho 1 finalizada com: " + input_line[i]);
+                    generateAndAppendToken(line, this.wordStartPosition, word, true);
                 }
             }
             else if (!String.IsNullOrEmpty(word) && 
                 !(input_line[i] == ' ' || input_line[i] == '.'|| input_line[i] == ','||
                 input_line[i] == '('|| input_line[i] == ')'))
             {//continuando a cadeia do token em word
-                if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
+                //if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
             }
             else if (!String.IsNullOrEmpty(word))
             {//finaliza a cadeia do token
-                if (verbose) Console.WriteLine("token encontrado: " + word);
-                if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
+                //if (verbose) Console.WriteLine("token encontrado: " + word);
+                //if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
 
-                generateAndAppendToken(line, wordStartPosition, word);
-                generateAndAppendToken(line, wordStartPosition, Char.ToString(input_line[i]));
+                generateAndAppendToken(line, this.wordStartPosition, word, false);
+                generateAndAppendToken(line, this.wordStartPosition + word.Length, Char.ToString(input_line[i]), true);
             }
             if (Error)
             {
@@ -73,9 +90,9 @@ public class Lexical_analizer
         }
         if (!String.IsNullOrEmpty(word))
         {//finaliza a cadeia do token
-            if (verbose) Console.WriteLine("token encontrado fora do loop: " + word);
+            //if (verbose) Console.WriteLine("token encontrado fora do loop: " + word);
 
-            generateAndAppendToken(line, wordStartPosition, word);
+            generateAndAppendToken(line, this.wordStartPosition, word, true);
         }
     }
 
@@ -97,39 +114,52 @@ public class Lexical_analizer
         {
             return close_parentesis;
         }
+        else if (lexeme.Equals(" "))
+        {
+            return delimiter;
+        }
+        else if (CheckNumber(lexeme))
+        {
+            return number;
+        }
         else if (lexeme.Contains("allyN") && lexeme.Length == 7 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
-            Char.IsLower(lexeme[lexeme.Length - 1]))
+            Char.IsDigit(lexeme[lexeme.Length - 1]))
         {
             return ally;
         }
         else if (lexeme.Contains("enemyN") && lexeme.Length == 8 &&
             Char.IsDigit(lexeme[lexeme.Length - 2]) &&
-            Char.IsLower(lexeme[lexeme.Length - 1]))
+            Char.IsDigit(lexeme[lexeme.Length - 1]))
         {
             return enemy;
         }
-        else if ((lexeme.Contains("moveTowards") && lexeme.Length == 11) ||
-            (lexeme.Contains("explore") && lexeme.Length == 7) ||
-            (lexeme.Contains("sendBall") && lexeme.Length == 8) ||
-            (lexeme.Contains("sayOk") && lexeme.Length == 5) ||
-            (lexeme.Contains("sayNo") && lexeme.Length == 5) ||
-            (lexeme.Contains("sayPosition") && lexeme.Length == 11) ||
-            (lexeme.Contains("help") && lexeme.Length == 4))
+        else if (lexeme.Equals("moveTowards") ||
+            lexeme.Equals("explore") ||
+            lexeme.Equals("sendBall") ||
+            lexeme.Equals("sayOk") ||
+            lexeme.Equals("sayNo") ||
+            lexeme.Equals("sayPosition") ||
+            lexeme.Equals("help"))
         {
             return action;
         }
-        else if ((lexeme.Contains("carryingBall") && lexeme.Length == 12)||
-            (lexeme.Contains("marked") && lexeme.Length == 6) ||
-            (lexeme.Contains("position") && lexeme.Length == 8) ||
-            (lexeme.Contains("neighbors") && lexeme.Length == 9))
+        else if (lexeme.Equals("carryingBall") || lexeme.Contains("marked") ||
+            lexeme.Contains("position") || lexeme.Contains("neighbors"))
         {
             return condition;
         }
-        else if ((lexeme.Contains("askAction") && lexeme.Length == 9) ||
-            (lexeme.Contains("askInfo") && lexeme.Length == 7))
+        else if (lexeme.Equals("askAction") || lexeme.Equals("askInfo"))
         {
             return ask;
+        }
+        else if (lexeme.Equals("allyGoal") || lexeme.Equals("enemyGoal"))
+        {
+            return objects;
+        }
+        else if (lexeme.Equals("self"))
+        {
+            return self;
         }
         else
         {
@@ -143,7 +173,7 @@ public class Lexical_analizer
         }
     }
 
-    private void generateAndAppendToken(int line, int column, string lexem)
+    private void generateAndAppendToken(int line, int column, string lexem, bool clean_buffer)
     {//recebendo dados iniciais de geração do token para unificar a geração
      //e evitar duplicidade de código
 
@@ -152,11 +182,13 @@ public class Lexical_analizer
 
         //Adicionando token a lista
         this.token_list.Add(new Token(tokenPosition, lexem, defineTokentipe(lexem)));
-
-        //reiniciando os separadores dos lexemas
+        if(clean_buffer){
+            //reiniciando os separadores dos lexemas
         this.stringInsertionPosition = 0;
         this.wordStartPosition = 0;
         this.word = "";
+        }
+        
     }
     public List<Token> getTokenList()
     {//retorna a lista de tokens do estado atual
