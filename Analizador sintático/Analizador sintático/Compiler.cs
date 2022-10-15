@@ -34,7 +34,6 @@ public class Compiler
                 lexical_analizer_instance.RunLexicalAnalizer(input_line, line_counter);
                 line_counter++;
             }
-
             //if (verbose) Console.WriteLine("Fim da análize léxica");
         }
 
@@ -49,8 +48,7 @@ public class Compiler
             Console.ReadLine();
         }
 
-
         return 0;
-        }
+    }
     
 }

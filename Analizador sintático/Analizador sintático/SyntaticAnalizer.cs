@@ -1,15 +1,31 @@
 ﻿using System;
 
 public class Syntatic
-{
-    public string SyntaticAnalizer(string s)
+{    
+    private List<Token> token_stack;
+    private List<Token> token_list;
+    public Syntatic()
     {
-
-        string R = FAllyGroup(s);
-
-        return R;
+        buffer_position = 0;
+        this.token_stack = new List<Token>();
     }
+    private Token GetToken(long int buffer_position)
+    {
+        Token token = token_list[buffer_position];
+        buffer_position++;
+        return token;
+    }
+    public string RunSyntaticAnalizer(List<Token> _token_list)
+    {
+        this.token_list = _token_list;
+        FS();
+    }
+    public bool FS()
+    {
+        if()
 
+    }
+    //---------------------------------------------------//
     public bool FLetter(char c)
     {
         return char.IsLetter(c) && char.IsLower(c);
