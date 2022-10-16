@@ -104,7 +104,7 @@ public class Lexical_analizer
         }
         else if (lexeme.Equals("."))
         {
-            return delimiter;
+            return endLine;
         }
         else if (lexeme.Equals("("))
         {

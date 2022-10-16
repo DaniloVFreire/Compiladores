@@ -14,6 +14,7 @@ public enum TokenTypes
 	close_parentesis,
 	self,
 	number,
+	endLine,
 }
 public class Token
 {
@@ -38,6 +39,11 @@ public class Token
 	public void setScope(string _scope)
 	{
 		this.scope = _scope;
+	}
+
+	public string getType()
+	{
+		return this.type.ToString();
 	}
 
 	private string formatString()

@@ -29,7 +29,7 @@ public class Syntatic
 
         foreach (var t in this.token_list)
         {
-            Console.WriteLine(t);
+            Console.WriteLine(t.getType());
         }   
 
         return true;
