@@ -1,3 +1,3 @@
-enemyN66 marked .
+enemyNa6 marked .
 moveTowards (enemyGoal) .
 askAction sendBall (self) allyN44 . sendBall (enemyGoal) .

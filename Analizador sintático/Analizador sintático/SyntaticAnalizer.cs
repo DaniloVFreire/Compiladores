@@ -1,87 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class Syntatic
-{
-    public string SyntaticAnalizer(string s)
+{    
+    private List<Token> token_stack;
+    private List<Token> token_list;
+    public Syntatic()
     {
-
-        string R = FAllyGroup(s);
-
-        return R;
+        int buffer_position = 0;
+        this.token_stack = new List<Token>();
     }
-
-    public bool FLetter(char c)
+    private Token GetToken(int buffer_position)
     {
-        return char.IsLetter(c) && char.IsLower(c);
+        Token token = token_list[buffer_position];
+        buffer_position++;
+        return token;
     }
-    public bool FNumber(char c)
+    public string RunSyntaticAnalizer(List<Token> _token_list)
     {
-        return char.IsDigit(c);
+        this.token_list = _token_list;
+        Console.WriteLine(this.token_list);
+        FS();
+        return "teste";
     }
-
-    public string FEnemy(string s)
+    public bool FS()
     {
-        string pattern = "enemyN";
-        int i;
-        for (i = 0; i < 6; ++i)
-        {
-            if (s[i] != pattern[i])
-            {
-                Console.WriteLine("Error, Invalid enemy token, expected 'enemyN'");
-                return "Error";
-            }
-        }
-        if (!FNumber(s[i]))
-        {
-            Console.WriteLine("Error, Invalid number token, expected number after 'enemyN'");
-            return "Error";
-        }
-        if (!FLetter(s[i + 1]))
-        {
-            Console.WriteLine("Error, Invalid letter token, expected letter after number");
-            return "Error";
-        }
+        Console.WriteLine(this.token_list);
 
-        return "<" + s + ", enemyN>";
+        foreach (var t in this.token_list)
+        {
+            Console.WriteLine(t);
+        }   
+
+        return true;
     }
-
-    public string FAlly(string s)
-    {
-        string pattern = "allyN";
-        int i;
-        for (i = 0; i < 5; ++i)
-        {
-            if (s[i] != pattern[i])
-            {
-                Console.WriteLine("Error, Invalid allyy token, expected 'allyN'");
-                return "Error";
-            }
-        }
-        if (!FNumber(s[i]))
-        {
-            Console.WriteLine("Error, Invalid number token, expected number after 'allyyN'");
-            return "Error";
-        }
-        if (!FLetter(s[i + 1]))
-        {
-            Console.WriteLine("Error, Invalid letter token, expected letter after number");
-            return "Error";
-        }
-
-        return "<" + s + ", allyN>";
-    }
-
-    public string FAllyGroup(string s)
-    {
-        char separator = ',';
-        string[] LAlly = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (string a in LAlly)
-        {
-
-            Console.WriteLine(FAlly(a));
-        }
-
-        return null;
-    }
+    
 }

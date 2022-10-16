@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using static Lexical_analizer;
+using static Syntatic;
 
 public class Compiler
 {
@@ -23,7 +24,7 @@ public class Compiler
         string[] archive_lines;
         int line_counter=0;
 
-        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\danil\Documents\GitHub\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
+        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\Zadhart\Desktop\Compiladores-main\Analizador sintático\Analizador sintático\WriteText.txt");
 
         foreach (string input_line in archive_lines)
         {
@@ -34,7 +35,6 @@ public class Compiler
                 lexical_analizer_instance.RunLexicalAnalizer(input_line, line_counter);
                 line_counter++;
             }
-
             //if (verbose) Console.WriteLine("Fim da análize léxica");
         }
 
@@ -45,12 +45,14 @@ public class Compiler
             foreach (var token in token_list)
             {
                 Console.WriteLine(token);
-            }
-            Console.ReadLine();
+            }         
         }
 
-
+        Console.WriteLine("________________________________________________________");
+        syntatic_instance.RunSyntaticAnalizer(this.token_list);
+           
+        Console.ReadLine();
         return 0;
-        }
+    }
     
 }
