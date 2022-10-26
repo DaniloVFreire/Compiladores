@@ -22,9 +22,9 @@ public class Compiler
         Lexical_analizer lexical_analizer_instance = new Lexical_analizer(verbose);
         Syntatic syntatic_instance = new Syntatic();
         string[] archive_lines;
-        int line_counter=0;
+        int line_counter = 0;
 
-        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\Zadhart\Desktop\Compiladores-main\Analizador sintático\Analizador sintático\WriteText.txt");
+        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\welso\Source\Repos\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
 
         foreach (string input_line in archive_lines)
         {
@@ -45,14 +45,14 @@ public class Compiler
             foreach (var token in token_list)
             {
                 Console.WriteLine(token);
-            }         
+            }
         }
 
         Console.WriteLine("________________________________________________________");
         syntatic_instance.RunSyntaticAnalizer(this.token_list);
-           
+
         Console.ReadLine();
         return 0;
     }
-    
+
 }

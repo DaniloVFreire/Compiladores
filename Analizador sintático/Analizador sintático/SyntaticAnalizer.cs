@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 public class Syntatic
-{    
+{
     private List<Token> token_stack;
     private List<Token> token_list;
     public Syntatic()
@@ -24,17 +24,77 @@ public class Syntatic
         return "teste";
     }
 
-    private bool RecEnemy(List<Token> _token_list)
+    private bool RecGoal (List<Token> _token_list)
     {
         Token i = _token_list[0];
 
-        if(i.getType() == "enemy")
+        if (i.getType() == "objects")
         {
             return true;
         }
 
         else
-        { 
+        {
+            return false;
+        }
+    }
+
+    private bool RecAction (List<Token> _token_list)
+    {
+        Token i = _token_list[0];
+
+        if (i.getType() == "action")
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool RecAsk(List<Token> _token_list)
+    {
+        Token i = _token_list[0];
+
+        if (i.getType() == "ask")
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool RecCondition(List<Token> _token_list)
+    {
+        Token i = _token_list[0];
+
+        if (i.getType() == "condition")
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool RecEnemy(List<Token> _token_list)
+    {
+        Token i = _token_list[0];
+
+        if (i.getType() == "enemy")
+        {
+            return true;
+        }
+
+        else
+        {
             return false;
         }
     }
@@ -43,13 +103,13 @@ public class Syntatic
     {
         Token i = _token_list[0];
 
-        if(i.getType() == "ally")
+        if (i.getType() == "ally")
         {
             return true;
         }
 
         else
-        { 
+        {
             return false;
         }
 
@@ -59,13 +119,13 @@ public class Syntatic
     {
         Token i = _token_list[0];
 
-        if(i.getType() == "separator")
+        if (i.getType() == "separator")
         {
             return true;
         }
 
         else
-        { 
+        {
             return false;
         }
 
@@ -75,13 +135,13 @@ public class Syntatic
     {
         Token i = _token_list[0];
 
-        if(i.getType() == "delimiter")
+        if (i.getType() == "delimiter")
         {
             return true;
         }
 
         else
-        { 
+        {
             return false;
         }
 
@@ -91,11 +151,11 @@ public class Syntatic
     {
         Token i = this.token_list[0];
 
-        if(RecAlly(_token_list) == true)
+        if (RecAlly(_token_list) == true)
         {
             this.token_list.RemoveAt(0);
 
-            if(RecSeparator(_token_list) == true)
+            if (RecSeparator(_token_list) == true)
             {
                 this.token_list.RemoveAt(0);
 
@@ -109,7 +169,7 @@ public class Syntatic
         }
 
         else
-        { 
+        {
             return false;
         }
 
@@ -119,13 +179,13 @@ public class Syntatic
     {
         Token i = _token_list[0];
 
-        if(i.getType() == "self")
+        if (i.getType() == "self")
         {
             return true;
         }
 
         else
-        { 
+        {
             return false;
         }
 
@@ -135,46 +195,120 @@ public class Syntatic
     {
         Token i = _token_list[0];
 
-        if(i.getType() == "endLine")
+        if (i.getType() == "endLine")
         {
             return true;
         }
 
         else
-        { 
+        {
             return false;
         }
 
     }
 
+    private bool RecParentesisClosed(List<Token> _token_list)
+    {
+        Token i = _token_list[1];
+
+        if (i.getType() == "close_parentesis")
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+    
+    private int RecParentesisOpen(List<Token> _token_list)
+    {
+        Token i = _token_list[0];
+
+        if (i.getType() == "open_parentesis")
+        {
+            if (!RecParentesisClosed(_token_list))
+            {
+                this.token_list.RemoveAt(2); //como tenho ctz que o parentesis n esta vazio, mas so posso remover o fecha
+                                             //parenteses quando tiver um abre, ja removo aqui
+                //Console.WriteLine("return 1");
+                return 1; // parenteses aberto com algum token depois diferente de parenteses fechado 
+            }
+            else
+            {
+                //Console.WriteLine("return 2");
+                return 2; // parenteses aberto com parenteses fechado em seguida, ou seja, vazio, error
+            }
+        }
+
+        else
+        {
+            //Console.WriteLine("return 0");
+            return 0; //Não é abre parênteses
+        }
+    }
+    
     public bool FS()
     {
 
         foreach (var t in this.token_list)
         {
             Console.WriteLine(t.getType());
-        }   
+        }
 
         Console.WriteLine("_______________________________________________");
 
-        RecAllyGroup(this.token_list);
-
-        if(RecDelimiter(this.token_list) == true)
+        while (token_list.Count != 0)
         {
-            this.token_list.RemoveAt(0);
-        }
+            RecAllyGroup(this.token_list);
 
-        if(RecSelf(this.token_list) == true)
-        {
-            this.token_list.RemoveAt(0);
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecEnemy(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecSelf(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecGoal(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecAsk(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecAction(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecCondition(this.token_list) == true)
+            {
+                this.token_list.RemoveAt(0);
+            }
+
+            if (RecParentesisOpen(this.token_list) == 1)
+            {
+                this.token_list.RemoveAt(0);
+            }
         }
 
         foreach (var t in this.token_list)
         {
             Console.WriteLine(t.getType());
-        }   
+        }
 
         return true;
     }
-    
 }
