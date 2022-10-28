@@ -1,1 +1,3 @@
+moveTowards (enemyGoal) 
+moveTowards (moveTowards) .
 moveTowards (enemyGoal) .

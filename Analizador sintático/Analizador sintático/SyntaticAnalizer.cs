@@ -25,12 +25,7 @@ public class Syntatic
         FS();
         return "teste";
     }
-    private void ClearLine (List<Token> _token_list)
-    {
-        while (token_list[0].getType() != "endLine") this.token_list.RemoveAt(0);
-
-        this.token_list.RemoveAt(0);
-    }
+    
     private bool RecGoal (List<Token> _token_list)
     {
         Token i = _token_list[0];
@@ -200,13 +195,6 @@ public class Syntatic
 
     private bool RecEndLine(List<Token> _token_list)
     {
-        foreach (var t in this.token_list)
-        {
-            Console.WriteLine(t.getType());
-        }
-        Console.WriteLine("##############################");
-        Console.WriteLine("------------"+_token_list.Count+"-------------");
-
         Token i = _token_list[0];
 
         if (i.getType() == "endLine")
@@ -223,7 +211,7 @@ public class Syntatic
 
     private bool RecParentesisClosed(List<Token> _token_list)
     {
-        Token i = _token_list[1];
+        Token i = _token_list[0];
 
         if (i.getType() == "close_parentesis")
         {
@@ -236,43 +224,39 @@ public class Syntatic
         }
     }
     
-    private int RecParentesisOpen(List<Token> _token_list)
+    private bool RecParentesisOpen(List<Token> _token_list)
     {
         Token i = _token_list[0];
 
         if (i.getType() == "open_parentesis")
         {
-            if (!RecParentesisClosed(_token_list))
-            {
-                this.token_list.RemoveAt(2); //como tenho ctz que o parentesis n esta vazio, mas so posso remover o fecha
-                                             //parenteses quando tiver um abre, ja removo aqui
-                //Console.WriteLine("return 1");
-                return 1; // parenteses aberto com algum token depois diferente de parenteses fechado 
-            }
-            else
-            {
-                //Console.WriteLine("return 2");
-                return 2; // parenteses aberto com parenteses fechado em seguida, ou seja, vazio, error
-            }
+            return true;
         }
 
         else
         {
-            //Console.WriteLine("return 0");
-            return 0; //Não é abre parênteses
+            return false;
         }
     }
-    
+
+    private void ClearLine(List<Token> _token_list, List<Token> _token_aux)
+    {
+        if (_token_list.Count > 0)
+        {
+            while (this.token_list[0].getType() != "endLine")   token_list.RemoveAt(0);
+
+            token_list.RemoveAt(0);
+        }
+        if (_token_aux.Count > 0)
+        {
+            while (this.token_aux.Count > 0) token_aux.RemoveAt(0);
+
+            //token_stack.RemoveAt(0);
+        }
+    }
+
     public bool FS()
     {
-
-        foreach (var t in this.token_list)
-        {
-            Console.WriteLine(t);
-        }
-
-        Console.WriteLine("_______________________________________________");
-
         while (token_list.Count != 0)
         {
             bool erro = false;
@@ -284,102 +268,77 @@ public class Syntatic
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
 
-                    foreach (var t in this.token_list)
-                    {
-                        Console.WriteLine(t.getType());
-                    }
-                    Console.WriteLine("##############################");
-
                     if (RecDelimiter(this.token_list) == true)
                     {
-                        Console.WriteLine("Entrou1");
                         this.token_aux.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
-
-                        foreach (var t in this.token_list)
-                        {
-                            Console.WriteLine(t.getType());
-                        }
-                        Console.WriteLine("##############################");
                     }
                     else
                     {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                        ClearLine(this.token_list);
                     }
-                    if (RecParentesisOpen(this.token_list) == 1 && erro == false)
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
                     {
-                        Console.WriteLine("Entrou2");
                         this.token_aux.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
-
-                        foreach (var t in this.token_list)
-                        {
-                            Console.WriteLine(t.getType());
-                        }
-                        Console.WriteLine("##############################");
                     }
                     else
                     {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                        ClearLine(this.token_list);
                     }
-                    if (RecEnemy(this.token_list) == true && erro == false ||
-                        RecAlly (this.token_list) == true && erro == false ||
-                        RecSelf (this.token_list) == true && erro == false ||
-                        RecGoal (this.token_list) == true && erro == false)
+
+                    if (erro == false && RecEnemy(this.token_list) == true ||
+                        erro == false && RecAlly (this.token_list) == true ||
+                        erro == false && RecSelf (this.token_list) == true ||
+                        erro == false && RecGoal (this.token_list) == true)
                     {
-                        Console.WriteLine("Entrou3");
                         this.token_aux.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
-
-                        foreach (var t in this.token_list)
-                        {
-                            Console.WriteLine(t.getType());
-                        }
-                        Console.WriteLine("##############################");
                     }
                     else
                     {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                        ClearLine(this.token_list);
                     }
 
-                    if (RecDelimiter(this.token_list) == true && erro == false)
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
                     {
-                        Console.WriteLine("Entrou5");
                         this.token_aux.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
-
-                        foreach (var t in this.token_list)
-                        {
-                            Console.WriteLine(t.getType());
-                        }
-                        Console.WriteLine("##############################");
                     }
                     else
                     {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                        ClearLine(this.token_list);
                     }
 
-                    if (RecEndLine(this.token_list) == true && erro == false)
+                    if (erro == false && RecDelimiter(this.token_list) == true)
                     {
-                        Console.WriteLine("Entrou4");
                         this.token_aux.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
-
-                        foreach (var t in this.token_list)
-                        {
-                            Console.WriteLine(t.getType());
-                        }
-                        Console.WriteLine("##############################");
                     }
                     else
                     {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                        Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
-                        Console.WriteLine("Linha ignorada");
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Linha ignorada");
+                        }
                     }
 
                     if (erro == false)
@@ -392,23 +351,32 @@ public class Syntatic
                     }
                     else
                     {
-                        Console.WriteLine("Error");
+                        Console.WriteLine("Error\n");
                     }
                 }
                 //if (token_list[0].getValue().Equals("sendBall"))
             }
-        }
 
-        foreach (var t in this.token_list)
-        {
-            Console.WriteLine(t.getType());
-        }
+            else if (RecCondition(this.token_list) == true)
+            {
 
-        Console.WriteLine("_______________________________________________");
+            }
+
+            else if (RecAsk(this.token_list) == true)
+            {
+
+            }
+
+            else
+            {
+                Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
+            }
+        }
 
         foreach (var t in this.token_stack)
         {
-            Console.WriteLine(t.getType());
+            if (t.getType() != "endLine")   Console.WriteLine(t.getType());
+            else                            Console.WriteLine(t.getType()+"\n");
         }
 
         return true;
