@@ -1,3 +1,3 @@
 sayOk (allyNa8) .
-sayNo (allyNa8) .
+carryingBall (enemyNb1) .
 sendBall (self) .

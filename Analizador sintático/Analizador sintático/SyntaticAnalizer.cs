@@ -239,7 +239,7 @@ public class Syntatic
         }
     }
 
-    private void ClearLine(List<Token> _token_list, List<Token> _token_aux)
+    private void ClearLine(List<Token> _token_list, List<Token> _token_aux) //quando da erro, limpa a linha e a lista aux até o momento
     {
         if (_token_list.Count > 0)
         {
@@ -260,6 +260,8 @@ public class Syntatic
         while (token_list.Count != 0)
         {
             bool erro = false;
+
+            //Não testei muito contra entradas com erros
 
             if (RecAction(this.token_list) == true)
             {
@@ -623,14 +625,289 @@ public class Syntatic
                         Console.WriteLine("Error\n");
                     }
                 }
+
+                //falta alguns que terão uma estrutura um pouco diferente
             }
 
-            /*else if (RecCondition(this.token_list) == true)
+            else if (RecCondition(this.token_list) == true)
             {
+                if (token_list[0].getValue().Equals("carryingBall"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
 
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEnemy(this.token_list) == true ||
+                        erro == false && RecAlly (this.token_list) == true ||
+                        erro == false && RecSelf (this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+                else if (token_list[0].getValue().Equals("marked"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEnemy(this.token_list) == true ||
+                        erro == false && RecAlly(this.token_list) == true ||
+                        erro == false && RecSelf(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+                else if (token_list[0].getValue().Equals("position"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEnemy(this.token_list) == true ||
+                        erro == false && RecAlly(this.token_list) == true ||
+                        erro == false && RecSelf(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+                //falta 'neighbours' que terá uma estrutura um pouco diferente
             }
 
-            else if (RecAsk(this.token_list) == true)
+            /*else if (RecAsk(this.token_list) == true)
             {
 
             }*/
