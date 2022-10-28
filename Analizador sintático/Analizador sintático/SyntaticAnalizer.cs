@@ -5,10 +5,12 @@ public class Syntatic
 {
     private List<Token> token_stack;
     private List<Token> token_list;
+    private List<Token> token_aux = null;
     public Syntatic()
     {
         int buffer_position = 0;
         this.token_stack = new List<Token>();
+        this.token_aux = new List<Token>();
     }
     private Token GetToken(int buffer_position)
     {
@@ -23,7 +25,12 @@ public class Syntatic
         FS();
         return "teste";
     }
+    private void ClearLine (List<Token> _token_list)
+    {
+        while (token_list[0].getType() != "endLine") this.token_list.RemoveAt(0);
 
+        this.token_list.RemoveAt(0);
+    }
     private bool RecGoal (List<Token> _token_list)
     {
         Token i = _token_list[0];
@@ -193,6 +200,13 @@ public class Syntatic
 
     private bool RecEndLine(List<Token> _token_list)
     {
+        foreach (var t in this.token_list)
+        {
+            Console.WriteLine(t.getType());
+        }
+        Console.WriteLine("##############################");
+        Console.WriteLine("------------"+_token_list.Count+"-------------");
+
         Token i = _token_list[0];
 
         if (i.getType() == "endLine")
@@ -254,57 +268,145 @@ public class Syntatic
 
         foreach (var t in this.token_list)
         {
-            Console.WriteLine(t.getType());
+            Console.WriteLine(t);
         }
 
         Console.WriteLine("_______________________________________________");
 
         while (token_list.Count != 0)
         {
-            RecAllyGroup(this.token_list);
-
-            if (RecDelimiter(this.token_list) == true)
-            {
-                this.token_list.RemoveAt(0);
-            }
-
-            if (RecEnemy(this.token_list) == true)
-            {
-                this.token_list.RemoveAt(0);
-            }
-
-            if (RecSelf(this.token_list) == true)
-            {
-                this.token_list.RemoveAt(0);
-            }
-
-            if (RecGoal(this.token_list) == true)
-            {
-                this.token_list.RemoveAt(0);
-            }
-
-            if (RecAsk(this.token_list) == true)
-            {
-                this.token_list.RemoveAt(0);
-            }
+            bool erro = false;
 
             if (RecAction(this.token_list) == true)
             {
-                this.token_list.RemoveAt(0);
-            }
+                if (token_list[0].getValue().Equals("moveTowards"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
 
-            if (RecCondition(this.token_list) == true)
-            {
-                this.token_list.RemoveAt(0);
-            }
+                    foreach (var t in this.token_list)
+                    {
+                        Console.WriteLine(t.getType());
+                    }
+                    Console.WriteLine("##############################");
 
-            if (RecParentesisOpen(this.token_list) == 1)
-            {
-                this.token_list.RemoveAt(0);
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        Console.WriteLine("Entrou1");
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+
+                        foreach (var t in this.token_list)
+                        {
+                            Console.WriteLine(t.getType());
+                        }
+                        Console.WriteLine("##############################");
+                    }
+                    else
+                    {
+                        erro = true;
+                        ClearLine(this.token_list);
+                    }
+                    if (RecParentesisOpen(this.token_list) == 1 && erro == false)
+                    {
+                        Console.WriteLine("Entrou2");
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+
+                        foreach (var t in this.token_list)
+                        {
+                            Console.WriteLine(t.getType());
+                        }
+                        Console.WriteLine("##############################");
+                    }
+                    else
+                    {
+                        erro = true;
+                        ClearLine(this.token_list);
+                    }
+                    if (RecEnemy(this.token_list) == true && erro == false ||
+                        RecAlly (this.token_list) == true && erro == false ||
+                        RecSelf (this.token_list) == true && erro == false ||
+                        RecGoal (this.token_list) == true && erro == false)
+                    {
+                        Console.WriteLine("Entrou3");
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+
+                        foreach (var t in this.token_list)
+                        {
+                            Console.WriteLine(t.getType());
+                        }
+                        Console.WriteLine("##############################");
+                    }
+                    else
+                    {
+                        erro = true;
+                        ClearLine(this.token_list);
+                    }
+
+                    if (RecDelimiter(this.token_list) == true && erro == false)
+                    {
+                        Console.WriteLine("Entrou5");
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+
+                        foreach (var t in this.token_list)
+                        {
+                            Console.WriteLine(t.getType());
+                        }
+                        Console.WriteLine("##############################");
+                    }
+                    else
+                    {
+                        erro = true;
+                        ClearLine(this.token_list);
+                    }
+
+                    if (RecEndLine(this.token_list) == true && erro == false)
+                    {
+                        Console.WriteLine("Entrou4");
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+
+                        foreach (var t in this.token_list)
+                        {
+                            Console.WriteLine(t.getType());
+                        }
+                        Console.WriteLine("##############################");
+                    }
+                    else
+                    {
+                        erro = true;
+                        Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                        Console.WriteLine("Linha ignorada");
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error");
+                    }
+                }
+                //if (token_list[0].getValue().Equals("sendBall"))
             }
         }
 
         foreach (var t in this.token_list)
+        {
+            Console.WriteLine(t.getType());
+        }
+
+        Console.WriteLine("_______________________________________________");
+
+        foreach (var t in this.token_stack)
         {
             Console.WriteLine(t.getType());
         }

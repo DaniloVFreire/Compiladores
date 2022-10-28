@@ -45,6 +45,10 @@ public class Token
 	{
 		return this.type.ToString();
 	}
+	public string getValue()
+    {
+		return this.value;
+    }
 
 	private string formatString()
 	{

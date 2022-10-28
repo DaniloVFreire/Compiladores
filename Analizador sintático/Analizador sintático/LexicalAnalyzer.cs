@@ -50,7 +50,7 @@ public class Lexical_analizer
         //if(verbose) Console.WriteLine("Lendo linha");
         for (int i = 0; i < input_line.Length; ++i)
         {
-            if (input_line[i] != ' ' && String.IsNullOrEmpty(word))
+            if (/*input_line[i] != ' ' && */String.IsNullOrEmpty(word))
             {//inicializa a cadeia do token em word
                 this.wordStartPosition = i;
                 // Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
