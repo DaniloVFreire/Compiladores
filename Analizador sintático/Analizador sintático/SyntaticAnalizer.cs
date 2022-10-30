@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 public class Syntatic
 {
@@ -943,7 +944,7 @@ public class Syntatic
 
     // Função que testa as várias possibilidades de ações
 
-    private bool RecActionType()
+    private bool recActionType()
     {
         // Tentando encontrar a ação realizada, entre os diversos tipos de ações
        
@@ -982,33 +983,13 @@ public class Syntatic
 
     }
 
-    // Função principal do analisador sintático, responsável por chamar as outras
+    //Funções que realizam o reconhecimento das condições
 
-    public bool FS(List<Token> _token_list)
+    private bool recCarryingBall()
     {
-        while (token_list.Count != 0)
-        {
-            bool erro = false;
+        bool erro = false;
 
-            //Não testei muito contra entradas com erros
-            
-            // Analisando se existe uma ação na lista de tokens
-            
-            if(RecAction(this.token_list) == true)
-            {
-                if(RecActionType() == false)
-                {
-                    Console.WriteLine("Não foi possivel identificar uma ação na frase");
-                }
-            }
-                
-
-                //falta alguns que terão uma estrutura um pouco diferente
-            
-
-            else if (RecCondition(this.token_list) == true)
-            {
-                if (token_list[0].getValue().Equals("carryingBall"))
+        if (token_list[0].getValue().Equals("carryingBall"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -1080,7 +1061,7 @@ public class Syntatic
                         if (erro == false)
                         {
                             erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Esperando um '.' ao final do comando 'carryingBall'");
                             Console.WriteLine("Linha ignorada");
                         }
                     }
@@ -1099,7 +1080,14 @@ public class Syntatic
                     }
                 }
 
-                else if (token_list[0].getValue().Equals("marked"))
+        return !erro;
+    }
+
+    private bool recMarked()
+    {
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("marked"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -1171,7 +1159,7 @@ public class Syntatic
                         if (erro == false)
                         {
                             erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Esperando um '.' ao final do comando 'marked'");
                             Console.WriteLine("Linha ignorada");
                         }
                     }
@@ -1190,7 +1178,14 @@ public class Syntatic
                     }
                 }
 
-                else if (token_list[0].getValue().Equals("position"))
+        return !erro;
+    }
+
+    private bool recPosition()
+    {
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("position"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -1262,7 +1257,7 @@ public class Syntatic
                         if (erro == false)
                         {
                             erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Esperando um '.' ao final do comando 'position'");
                             Console.WriteLine("Linha ignorada");
                         }
                     }
@@ -1281,7 +1276,62 @@ public class Syntatic
                     }
                 }
 
-                //falta 'neighbours' que terá uma estrutura um pouco diferente
+        return !erro;
+    }
+
+    // Função que testa as diversas possibilidades de condições
+
+    private bool recConditionType()
+    {
+        // Tentando encontrar a condição correta entre os diversos tipos de condições
+
+        if (token_list[0].getValue().Equals("carryingBall"))
+        {
+            return recCarryingBall();
+        }
+        else if (token_list[0].getValue().Equals("marked"))
+        {
+            return recMarked();
+        }
+        else if (token_list[0].getValue().Equals("position"))
+        {
+            return recPosition();
+        }
+
+        //falta 'neighbours' que terá uma estrutura um pouco diferente
+
+        else
+        {
+            return false;
+        }
+    }
+
+    // Função principal do analisador sintático, responsável por chamar as outras
+
+    public bool FS(List<Token> _token_list)
+    {
+        while (token_list.Count != 0)
+        {
+            bool erro = false;
+            
+            // Analisando se existe uma ação na lista de tokens
+            
+            if(RecAction(this.token_list) == true)
+            {
+                if(recActionType() == false)
+                {
+                    Console.WriteLine("Não foi possivel identificar uma ação na frase");
+                }
+            }
+            
+            // Analisando se existe alguma condição na lista de tokens
+
+            else if (RecCondition(this.token_list) == true)
+            {
+                if(recConditionType() == false)
+                {
+                    Console.WriteLine("Não foi possivel identificar uma condição na frase");
+                }                           
             }
 
             /*else if (RecAsk(this.token_list) == true)
