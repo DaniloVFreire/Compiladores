@@ -22,10 +22,12 @@ public class Syntatic
     {
         this.token_list = _token_list;
         Console.WriteLine(this.token_list);
-        FS();
+        FS(this.token_list);
         return "teste";
     }
-    
+
+    // Funções auxiliares para ajudar a reconhecer a ordem, e o tipo dos tokens
+ 
     private bool RecGoal (List<Token> _token_list)
     {
         Token i = _token_list[0];
@@ -239,8 +241,26 @@ public class Syntatic
         }
     }
 
-    private void ClearLine(List<Token> _token_list, List<Token> _token_aux) //quando da erro, limpa a linha e a lista aux até o momento
+    private bool RecObjects(List<Token> _token_list)
     {
+        Token i = _token_list[0];
+
+        if (i.getType() == "objects")
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    // Função auxiliar que limpa uma linha de código com erro
+
+    private void ClearLine(List<Token> _token_list, List<Token> _token_aux) 
+    {
+        //quando da erro, limpa a linha e a lista aux até o momento
         if (_token_list.Count > 0)
         {
             while (this.token_list[0].getType() != "endLine")   token_list.RemoveAt(0);
@@ -255,17 +275,14 @@ public class Syntatic
         }
     }
 
-    public bool FS()
+    // Funções que realizam o reconhecimento das ações
+
+    private bool recMoveTowards()
     {
-        while (token_list.Count != 0)
-        {
-            bool erro = false;
+        // Essa função reconhece a ação moveTowards
+         bool erro = false; 
 
-            //Não testei muito contra entradas com erros
-
-            if (RecAction(this.token_list) == true)
-            {
-                if (token_list[0].getValue().Equals("moveTowards"))
+         if (token_list[0].getValue().Equals("moveTowards"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -357,7 +374,17 @@ public class Syntatic
                     }
                 }
 
-                else if (token_list[0].getValue().Equals("sendBall"))
+         return !erro;
+
+    }
+
+    private bool recSendBall()
+    {
+        //Essa função reconhece a ação sendBall
+
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("sendBall"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -448,7 +475,16 @@ public class Syntatic
                     }
                 }
 
-                else if (token_list[0].getValue().Equals("sayOk"))
+        return !erro;
+    }
+
+    private bool recSayOK()
+    {
+        // Essa função reconhece a ação sayOK
+
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("sayOk"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -537,7 +573,16 @@ public class Syntatic
                     }
                 }
 
-                else if (token_list[0].getValue().Equals("sayNo"))
+        return !erro;
+    }
+
+    private bool recSayNO()
+    {
+        // Essa função tenta reconhecer a ação sayNO
+
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("sayNo"))
                 {
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
@@ -625,9 +670,167 @@ public class Syntatic
                         Console.WriteLine("Error\n");
                     }
                 }
+
+        return !erro;
+    }
+
+    private bool recSayPosition()
+    {
+        // Essa função tenta reconhecer a ação sayPosition
+
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("sayPosition"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEnemy(this.token_list) == true ||
+                        erro == false && RecAlly (this.token_list) == true ||
+                        erro == false && RecSelf (this.token_list) == true ||
+                        erro == false && RecGoal (this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+        return !erro;
+    }// função ainda está em construção
+
+    // Função que testa as várias possibilidades de ações
+
+    private bool RecActionType()
+    {
+        // Tentando encontrar a ação realizada, entre os diversos tipos de ações
+       
+        if (token_list[0].getValue().Equals("explore"))
+        {
+            return true;
+        }
+        else if (token_list[0].getValue().Equals("moveTowards"))
+        {
+            return recMoveTowards();
+        }
+        else if (token_list[0].getValue().Equals("sendBall"))
+        {
+            return recSendBall();
+        }
+        else if (token_list[0].getValue().Equals("sayOk"))
+        {
+            return recSayOK();
+        }
+        else if (token_list[0].getValue().Equals("sayNo"))
+        {
+            return recSayNO();
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    // Função principal do analisador sintático, responsável por chamar as outras
+
+    public bool FS(List<Token> _token_list)
+    {
+        while (token_list.Count != 0)
+        {
+            bool erro = false;
+
+            //Não testei muito contra entradas com erros
+            
+            // Analisando se existe uma ação na lista de tokens
+            
+            if(RecAction(this.token_list) == true)
+            {
+                if(RecActionType() == false)
+                {
+                    Console.WriteLine("Não foi possivel identificar uma ação na frase");
+                }
+            }
+                
 
                 //falta alguns que terão uma estrutura um pouco diferente
-            }
+            
 
             else if (RecCondition(this.token_list) == true)
             {
