@@ -361,21 +361,6 @@ public class Syntatic
                         erro = true;
                     }
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
-                            Console.WriteLine("Linha ignorada");
-                        }
-                    }
-
                     if (erro == false)
                     {
                         while (token_aux.Count != 0)
@@ -462,21 +447,6 @@ public class Syntatic
                         erro = true;
                     }
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
-                            Console.WriteLine("Linha ignorada");
-                        }
-                    }
-
                     if (erro == false)
                     {
                         while (token_aux.Count != 0)
@@ -560,21 +530,6 @@ public class Syntatic
                         erro = true;
                     }
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
-                            Console.WriteLine("Linha ignorada");
-                        }
-                    }
-
                     if (erro == false)
                     {
                         while (token_aux.Count != 0)
@@ -656,21 +611,6 @@ public class Syntatic
                     {
                         if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                    }
-
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
-                            Console.WriteLine("Linha ignorada");
-                        }
                     }
 
                     if (erro == false)
@@ -814,21 +754,6 @@ public class Syntatic
                         erro = true;
                     }
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'sayPosition'");
-                            Console.WriteLine("Linha ignorada");
-                        }
-                    }
-
                     if (erro == false)
                     {
                         while (token_aux.Count != 0)
@@ -908,21 +833,6 @@ public class Syntatic
                     {
                         if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                    }
-
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'help");
-                            Console.WriteLine("Linha ignorada");
-                        }
                     }
 
                     if (erro == false)
@@ -1051,21 +961,6 @@ public class Syntatic
                         erro = true;
                     }
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'carryingBall'");
-                            Console.WriteLine("Linha ignorada");
-                        }
-                    }
-
                     if (erro == false)
                     {
                         while (token_aux.Count != 0)
@@ -1147,21 +1042,6 @@ public class Syntatic
                     {
                         if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                    }
-
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'marked'");
-                            Console.WriteLine("Linha ignorada");
-                        }
                     }
 
                     if (erro == false)
@@ -1247,21 +1127,6 @@ public class Syntatic
                     {
                         if (erro == false) ClearLine(this.token_list, this.token_aux);
                         erro = true;
-                    }
-
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'position'");
-                            Console.WriteLine("Linha ignorada");
-                        }
                     }
 
                     if (erro == false)
@@ -1350,21 +1215,6 @@ public class Syntatic
                         erro = true;
                     }
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false)
-                        {
-                            erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'neighbors'");
-                            Console.WriteLine("Linha ignorada");
-                        }
-                    }
-
                     if (erro == false)
                     {
                         while (token_aux.Count != 0)
@@ -1410,6 +1260,248 @@ public class Syntatic
         }
     }
 
+    // Funções que realizam o reconhecimento das perguntas
+
+    private bool recAskAction()
+    {
+        // Essa função tenta reconhecer o pedido de uma ação
+
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("askAction"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    // Reconhecendo o primeiro delimitador
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer uma ação
+
+                    if(RecAction(this.token_list) == true)
+                    {
+                        if(recActionType() == false)
+                        {
+                            Console.WriteLine("Não foi possivel identificar uma ação na frase");
+                        }
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    //OBS: o segundo delimitador já é reconhecido na função que reconhece a ação
+
+                    //Tentando reconhecer open_parentesis
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer um aliado
+
+                    if (erro == false && RecAlly(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer close parentesis
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer o terceiro delimitador
+                    
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Removendo os tokens da lista, e adicionando na stack
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+        return !erro;
+    }
+
+    private bool recAskInfo()
+    {
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("askInfo"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    // Reconhecendo o primeiro delimitador
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer uma condição
+
+                    if(RecCondition(this.token_list) == true)
+                    {
+                        if(recConditionType() == false)
+                        {
+                            Console.WriteLine("Não foi possivel identificar uma condição na frase");
+                        }
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    //OBS: o segundo delimitador já é reconhecido na função que reconhece a condição
+
+                    //Tentando reconhecer open_parentesis
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer um aliado
+
+                    if (erro == false && RecAlly(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer close parentesis
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Tentando reconhecer o terceiro delimitador
+                    
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    // Removendo os tokens da lista, e adicionando na stack
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+        return !erro;
+    }
+
+    // Função que testa as diversas possibilidades de perguntas
+
+    private bool recAskType()
+    {
+        // Tentando encontrar a pergunta correta entre os diversos tipos de perguntas
+
+        if (token_list[0].getValue().Equals("askAction"))
+        {
+            return recAskAction();
+        }
+        else if (token_list[0].getValue().Equals("askInfo"))
+        {
+            return recAskInfo();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     // Função principal do analisador sintático, responsável por chamar as outras
 
     public bool FS(List<Token> _token_list)
@@ -1422,7 +1514,27 @@ public class Syntatic
             
             if(RecAction(this.token_list) == true)
             {
-                if(recActionType() == false)
+                if(recActionType() == true)
+                {
+                    // Reconhecendo e removendo o ponto final da frase
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_stack.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'action'");
+                            this.token_stack.Add(token_list[0]);
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+                }
+                else
                 {
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
@@ -1432,16 +1544,60 @@ public class Syntatic
 
             else if (RecCondition(this.token_list) == true)
             {
-                if(recConditionType() == false)
+                if(recConditionType() == true)
+                {
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_stack.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'condition'");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+                }  
+                else
                 {
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
-                }                           
+                }
             }
 
-            /*else if (RecAsk(this.token_list) == true)
-            {
+            // Analisando se existe alguma pergunta na lista de tokens
 
-            }*/
+            else if (RecAsk(this.token_list) == true)
+            {
+                // Reconhecendo e removendo o ponto final da frase
+
+                if (recAskType() == true)
+                {
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_stack.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'ask'");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Não foi possivel identificar uma pergunta na frase");
+                }
+                
+            }
+
+            // Print a error if there is no action, condition or ask
 
             else
             {
@@ -1449,6 +1605,8 @@ public class Syntatic
                 Console.ReadLine();
             }
         }
+
+        // Print the token stack
 
         foreach (var t in this.token_stack)
         {
