@@ -1183,6 +1183,8 @@ public class Syntatic
 
     private bool recPosition()
     {
+        // Essa função tenta reconhecer a condição 'position'
+
         bool erro = false;
 
         if (token_list[0].getValue().Equals("position"))
@@ -1279,6 +1281,107 @@ public class Syntatic
         return !erro;
     }
 
+    private bool recNeighbors()
+    { 
+        // Essa função tenta reconhecer a condição 'neighbors'
+
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("neighbors"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEnemy(this.token_list) == true ||
+                        erro == false && RecAlly (this.token_list) == true ||
+                        erro == false && RecSelf (this.token_list) == true ||
+                        erro == false && RecGoal (this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'neighbors'");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+        return !erro;
+    }
+
     // Função que testa as diversas possibilidades de condições
 
     private bool recConditionType()
@@ -1297,9 +1400,10 @@ public class Syntatic
         {
             return recPosition();
         }
-
-        //falta 'neighbours' que terá uma estrutura um pouco diferente
-
+        else if (token_list[0].getValue().Equals("neighbors"))
+        {
+            return recNeighbors();
+        }
         else
         {
             return false;
@@ -1342,6 +1446,7 @@ public class Syntatic
             else
             {
                 Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
+                Console.ReadLine();
             }
         }
 
