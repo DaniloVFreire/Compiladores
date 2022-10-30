@@ -1601,8 +1601,8 @@ public class Syntatic
 
             else
             {
+                ClearLine(this.token_list, this.token_aux);
                 Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
-                Console.ReadLine();
             }
         }
 
