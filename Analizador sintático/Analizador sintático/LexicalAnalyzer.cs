@@ -11,7 +11,7 @@ public class Lexical_analizer
     private string word;
     bool Error;
     public Lexical_analizer()
-	{
+    {
         constructorConvergence();
         this.verbose = false;
     }
@@ -30,7 +30,7 @@ public class Lexical_analizer
     }
     private bool CheckNumber(string s)
     {
-        if (s.Equals("0") || 
+        if (s.Equals("0") ||
             s.Equals("1") ||
             s.Equals("2") ||
             s.Equals("3") ||
@@ -48,13 +48,13 @@ public class Lexical_analizer
     public void RunLexicalAnalizer(string input_line, int line)
     {
         //if(verbose) Console.WriteLine("Lendo linha");
-        for (int i = 0 ; i<input_line.Length ; ++i )
+        for (int i = 0; i < input_line.Length; ++i)
         {
-            if (input_line[i] != ' ' && String.IsNullOrEmpty(word))
+            if (/*input_line[i] != ' ' && */String.IsNullOrEmpty(word))
             {//inicializa a cadeia do token em word
                 this.wordStartPosition = i;
-               // Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
-                
+                // Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
 
@@ -65,9 +65,9 @@ public class Lexical_analizer
                     generateAndAppendToken(line, this.wordStartPosition, word, true);
                 }
             }
-            else if (!String.IsNullOrEmpty(word) && 
-                !(input_line[i] == ' ' || input_line[i] == '.'|| input_line[i] == ','||
-                input_line[i] == '('|| input_line[i] == ')'))
+            else if (!String.IsNullOrEmpty(word) &&
+                !(input_line[i] == ' ' || input_line[i] == '.' || input_line[i] == ',' ||
+                input_line[i] == '(' || input_line[i] == ')'))
             {//continuando a cadeia do token em word
                 //if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
 
@@ -104,7 +104,7 @@ public class Lexical_analizer
         }
         else if (lexeme.Equals("."))
         {
-            return delimiter;
+            return endLine;
         }
         else if (lexeme.Equals("("))
         {
@@ -123,13 +123,13 @@ public class Lexical_analizer
             return number;
         }
         else if (lexeme.Contains("allyN") && lexeme.Length == 7 &&
-            Char.IsDigit(lexeme[lexeme.Length - 2]) &&
+            Char.IsLetter(lexeme[lexeme.Length - 2]) &&
             Char.IsDigit(lexeme[lexeme.Length - 1]))
         {
             return ally;
         }
         else if (lexeme.Contains("enemyN") && lexeme.Length == 8 &&
-            Char.IsDigit(lexeme[lexeme.Length - 2]) &&
+            Char.IsLetter(lexeme[lexeme.Length - 2]) &&
             Char.IsDigit(lexeme[lexeme.Length - 1]))
         {
             return enemy;
@@ -178,17 +178,18 @@ public class Lexical_analizer
      //e evitar duplicidade de código
 
         //Adicionando um a coluna e lina pois não tem posição 0,0 em um texto e sim 1,1
-        Tuple<int, int> tokenPosition = new Tuple<int, int>(line+1, column+1);
+        Tuple<int, int> tokenPosition = new Tuple<int, int>(line + 1, column + 1);
 
         //Adicionando token a lista
         this.token_list.Add(new Token(tokenPosition, lexem, defineTokentipe(lexem)));
-        if(clean_buffer){
+        if (clean_buffer)
+        {
             //reiniciando os separadores dos lexemas
-        this.stringInsertionPosition = 0;
-        this.wordStartPosition = 0;
-        this.word = "";
+            this.stringInsertionPosition = 0;
+            this.wordStartPosition = 0;
+            this.word = "";
         }
-        
+
     }
     public List<Token> getTokenList()
     {//retorna a lista de tokens do estado atual
