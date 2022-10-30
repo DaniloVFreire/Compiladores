@@ -241,6 +241,21 @@ public class Syntatic
         }
     }
 
+    private bool RecNumber(List<Token> _token_list)
+    {
+        Token i = _token_list[0];
+
+        if (i.getType() == "number")
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
     private bool RecObjects(List<Token> _token_list)
     {
         Token i = _token_list[0];
@@ -682,8 +697,11 @@ public class Syntatic
 
         if (token_list[0].getValue().Equals("sayPosition"))
                 {
+                    // Com isso já reconhecemos a palavra sayPosition
                     this.token_aux.Add(token_list[0]);
                     this.token_list.RemoveAt(0);
+                    
+                    // Agora estamos tentando reconhecer o espaço depois da palavra
 
                     if (RecDelimiter(this.token_list) == true)
                     {
@@ -711,6 +729,154 @@ public class Syntatic
                         erro == false && RecAlly (this.token_list) == true ||
                         erro == false && RecSelf (this.token_list) == true ||
                         erro == false && RecGoal (this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+                    
+                    // Tentando reconhecer as virgulas 
+                    if (erro == false && RecSeparator(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+                    // Fim do reconhecimento das virgulas
+
+                    // Tentando reconhecer o numero
+                    if (erro == false && RecNumber(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+                    // Fim do reconhecimento do numero
+
+                    // Tentando reconhecer as virgulas 
+                    if (erro == false && RecSeparator(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+                    // Fim do reconhecimento das virgulas
+
+                    // Tentando reconhecer o numero
+                    if (erro == false && RecNumber(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+                    // Fim do reconhecimento do numero
+
+                    if (erro == false && RecParentesisClosed(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecEndLine(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false)
+                        {
+                            erro = true;
+                            Console.WriteLine("Esperando um '.' ao final do comando 'sayPosition'");
+                            Console.WriteLine("Linha ignorada");
+                        }
+                    }
+
+                    if (erro == false)
+                    {
+                        while (token_aux.Count != 0)
+                        {
+                            this.token_stack.Add(this.token_aux[0]);
+                            this.token_aux.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error\n");
+                    }
+                }
+
+        return !erro;
+    }
+
+    private bool recHelp()
+    {
+        bool erro = false;
+
+        if (token_list[0].getValue().Equals("help"))
+                {
+                    this.token_aux.Add(token_list[0]);
+                    this.token_list.RemoveAt(0);
+
+                    if (RecDelimiter(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecParentesisOpen(this.token_list) == true)
+                    {
+                        this.token_aux.Add(token_list[0]);
+                        this.token_list.RemoveAt(0);
+                    }
+                    else
+                    {
+                        if (erro == false) ClearLine(this.token_list, this.token_aux);
+                        erro = true;
+                    }
+
+                    if (erro == false && RecAlly(this.token_list) == true)
                     {
                         this.token_aux.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
@@ -753,7 +919,7 @@ public class Syntatic
                         if (erro == false)
                         {
                             erro = true;
-                            Console.WriteLine("Esperando um '.' ao final do comando 'MoveTowards");
+                            Console.WriteLine("Esperando um '.' ao final do comando 'help");
                             Console.WriteLine("Linha ignorada");
                         }
                     }
@@ -773,7 +939,7 @@ public class Syntatic
                 }
 
         return !erro;
-    }// função ainda está em construção
+    }
 
     // Função que testa as várias possibilidades de ações
 
@@ -800,6 +966,14 @@ public class Syntatic
         else if (token_list[0].getValue().Equals("sayNo"))
         {
             return recSayNO();
+        }
+        else if (token_list[0].getValue().Equals("sayPosition"))
+        {
+            return recSayPosition();
+        }
+        else if (token_list[0].getValue().Equals("help"))
+        {
+            return recHelp();
         }
         else
         {
