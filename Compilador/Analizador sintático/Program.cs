@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,9 @@ namespace CompilerS
     {
         static void Main(string[] args)
         {
-            Compiler compiler_instance = new Compiler(true);
-            Console.WriteLine("algo");
+            Utils utils = new Utils(true);
+            Compiler compiler_instance = new Compiler(utils);
             compiler_instance.RunCompilation();
         }
     }
-    
 }

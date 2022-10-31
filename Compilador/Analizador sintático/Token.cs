@@ -22,7 +22,6 @@ public class Token
 	private string value;
 	private TokenTypes type;
 	private string scope;
-	private int dummyPointer;
 	public Token(Tuple<int, int> _position, string _value, TokenTypes _type)
 	{
 		this.position = _position;

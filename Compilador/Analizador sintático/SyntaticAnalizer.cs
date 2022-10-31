@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using static TokenTypes;
 public class Syntatic
 {
     private List<Token> token_stack;
@@ -9,7 +9,6 @@ public class Syntatic
     private List<Token> token_aux = null;
     public Syntatic()
     {
-        int buffer_position = 0;
         this.token_stack = new List<Token>();
         this.token_aux = new List<Token>();
     }
@@ -29,243 +28,39 @@ public class Syntatic
 
     // Funções auxiliares para ajudar a reconhecer a ordem, e o tipo dos tokens
 
-    private bool RecGoal(List<Token> _token_list)
+    private bool IsTokenType(List<Token> _token_list, TokenTypes token_type)
     {
         Token i = _token_list[0];
 
-        if (i.getType() == "objects")
+        if (i.getType() == token_type.ToString())
         {
             return true;
         }
-
         else
         {
             return false;
         }
-    }
-
-    private bool RecAction(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "action")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecAsk(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "ask")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecCondition(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "condition")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecEnemy(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "enemy")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecAlly(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "ally")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-
-    }
-
-    private bool RecSeparator(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "separator")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-
-    }
-
-    private bool RecDelimiter(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "delimiter")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-
     }
 
     private bool RecAllyGroup(List<Token> _token_list)
     {
         Token i = this.token_list[0];
 
-        if (RecAlly(_token_list) == true)
+        if (IsTokenType(_token_list, TokenTypes.ally) == true)
         {
             this.token_list.RemoveAt(0);
 
-            if (RecSeparator(_token_list) == true)
+            if (IsTokenType(_token_list, TokenTypes.separator) == true)
             {
                 this.token_list.RemoveAt(0);
 
                 return RecAllyGroup(_token_list);
             }
-
             else
             {
                 return true;
             }
         }
-
-        else
-        {
-            return false;
-        }
-
-    }
-
-    private bool RecSelf(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "self")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-
-    }
-
-    private bool RecEndLine(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "endLine")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-
-    }
-
-    private bool RecParentesisClosed(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "close_parentesis")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecParentesisOpen(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "open_parentesis")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecNumber(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "number")
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool RecObjects(List<Token> _token_list)
-    {
-        Token i = _token_list[0];
-
-        if (i.getType() == "objects")
-        {
-            return true;
-        }
-
         else
         {
             return false;
@@ -279,13 +74,18 @@ public class Syntatic
         //quando da erro, limpa a linha e a lista aux até o momento
         if (_token_list.Count > 0)
         {
-            while (this.token_list[0].getType() != "endLine") token_list.RemoveAt(0);
-
+            while (IsTokenType(this.token_list, TokenTypes.endLine) == false) 
+            { 
+                token_list.RemoveAt(0); 
+            }
             token_list.RemoveAt(0);
         }
         if (_token_aux.Count > 0)
         {
-            while (this.token_aux.Count > 0) token_aux.RemoveAt(0);
+            while (this.token_aux.Count > 0) 
+            {
+                token_aux.RemoveAt(0);
+            } 
 
             //token_stack.RemoveAt(0);
         }
@@ -303,7 +103,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list, TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -314,7 +114,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list, TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -325,10 +125,10 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly(this.token_list) == true ||
-                erro == false && RecSelf(this.token_list) == true ||
-                erro == false && RecGoal(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list, TokenTypes.enemy) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.ally) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.objects))
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -339,7 +139,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list, TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -350,7 +150,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list, TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -390,7 +190,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list, TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -401,7 +201,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list, TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -412,9 +212,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecAlly(this.token_list) == true ||
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true ||
                 erro == false && token_list[0].getValue().Equals("enemyGoal") ||
-                erro == false && RecSelf(this.token_list) == true)
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -425,7 +225,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -436,7 +236,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -475,7 +275,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -486,7 +286,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -497,7 +297,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecAlly(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -508,7 +308,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -519,7 +319,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -558,7 +358,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -569,7 +369,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -580,7 +380,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecAlly(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -591,7 +391,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -602,7 +402,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -644,7 +444,7 @@ public class Syntatic
 
             // Agora estamos tentando reconhecer o espaço depois da palavra
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -655,7 +455,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -666,10 +466,10 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly(this.token_list) == true ||
-                erro == false && RecSelf(this.token_list) == true ||
-                erro == false && RecGoal(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.enemy) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.objects) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -681,7 +481,7 @@ public class Syntatic
             }
 
             // Tentando reconhecer as virgulas 
-            if (erro == false && RecSeparator(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.separator) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -694,7 +494,7 @@ public class Syntatic
             // Fim do reconhecimento das virgulas
 
             // Tentando reconhecer o numero
-            if (erro == false && RecNumber(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.number) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -707,7 +507,7 @@ public class Syntatic
             // Fim do reconhecimento do numero
 
             // Tentando reconhecer as virgulas 
-            if (erro == false && RecSeparator(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.separator) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -720,7 +520,7 @@ public class Syntatic
             // Fim do reconhecimento das virgulas
 
             // Tentando reconhecer o numero
-            if (erro == false && RecNumber(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.number) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -732,7 +532,7 @@ public class Syntatic
             }
             // Fim do reconhecimento do numero
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -743,7 +543,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -780,7 +580,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -791,7 +591,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -802,7 +602,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecAlly(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -813,7 +613,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -824,7 +624,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -904,7 +704,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -915,7 +715,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -926,9 +726,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly(this.token_list) == true ||
-                erro == false && RecSelf(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.enemy) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -939,7 +739,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -950,7 +750,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -987,7 +787,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -998,7 +798,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1009,9 +809,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly(this.token_list) == true ||
-                erro == false && RecSelf(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.enemy) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1022,7 +822,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1033,7 +833,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1072,7 +872,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1083,7 +883,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1094,9 +894,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly(this.token_list) == true ||
-                erro == false && RecSelf(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.enemy) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1107,7 +907,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1118,7 +918,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1157,7 +957,7 @@ public class Syntatic
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1168,7 +968,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1179,10 +979,10 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly(this.token_list) == true ||
-                erro == false && RecSelf(this.token_list) == true ||
-                erro == false && RecGoal(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.enemy) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true ||
+                erro == false && IsTokenType(this.token_list, TokenTypes.self) == true ||
+                erro == false && IsTokenType(this.token_list,TokenTypes.objects) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1193,7 +993,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1204,7 +1004,7 @@ public class Syntatic
                 erro = true;
             }
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1275,7 +1075,7 @@ public class Syntatic
 
             // Reconhecendo o primeiro delimitador
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1288,7 +1088,7 @@ public class Syntatic
 
             // Tentando reconhecer uma ação
 
-            if (RecAction(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.action) == true)
             {
                 if (recActionType() == false)
                 {
@@ -1305,7 +1105,7 @@ public class Syntatic
 
             //Tentando reconhecer open_parentesis
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1318,7 +1118,7 @@ public class Syntatic
 
             // Tentando reconhecer um aliado
 
-            if (erro == false && RecAlly(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1330,7 +1130,7 @@ public class Syntatic
             }
 
             // Tentando reconhecer close parentesis
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1343,7 +1143,7 @@ public class Syntatic
 
             // Tentando reconhecer o terceiro delimitador
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1384,7 +1184,7 @@ public class Syntatic
 
             // Reconhecendo o primeiro delimitador
 
-            if (RecDelimiter(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1397,7 +1197,7 @@ public class Syntatic
 
             // Tentando reconhecer uma condição
 
-            if (RecCondition(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.condition) == true)
             {
                 if (recConditionType() == false)
                 {
@@ -1414,7 +1214,7 @@ public class Syntatic
 
             //Tentando reconhecer open_parentesis
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.open_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1427,7 +1227,7 @@ public class Syntatic
 
             // Tentando reconhecer um aliado
 
-            if (erro == false && RecAlly(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.ally) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1439,7 +1239,7 @@ public class Syntatic
             }
 
             // Tentando reconhecer close parentesis
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.close_parentesis) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1452,7 +1252,7 @@ public class Syntatic
 
             // Tentando reconhecer o terceiro delimitador
 
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (erro == false && IsTokenType(this.token_list,TokenTypes.delimiter) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1512,13 +1312,13 @@ public class Syntatic
 
             // Analisando se existe uma ação na lista de tokens
 
-            if (RecAction(this.token_list) == true)
+            if (IsTokenType(this.token_list,TokenTypes.action) == true)
             {
                 if (recActionType() == true)
                 {
                     // Reconhecendo e removendo o ponto final da frase
 
-                    if (erro == false && RecEndLine(this.token_list) == true)
+                    if (erro == false && IsTokenType(this.token_list,TokenTypes.endLine) == true)
                     {
                         this.token_stack.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
@@ -1542,11 +1342,11 @@ public class Syntatic
 
             // Analisando se existe alguma condição na lista de tokens
 
-            else if (RecCondition(this.token_list) == true)
+            else if (IsTokenType(this.token_list,TokenTypes.condition) == true)
             {
                 if (recConditionType() == true)
                 {
-                    if (erro == false && RecEndLine(this.token_list) == true)
+                    if (erro == false && IsTokenType(this.token_list,TokenTypes.endLine) == true)
                     {
                         this.token_stack.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
@@ -1569,13 +1369,13 @@ public class Syntatic
 
             // Analisando se existe alguma pergunta na lista de tokens
 
-            else if (RecAsk(this.token_list) == true)
+            else if (IsTokenType(this.token_list, TokenTypes.ask) == true)
             {
                 // Reconhecendo e removendo o ponto final da frase
 
                 if (recAskType() == true)
                 {
-                    if (erro == false && RecEndLine(this.token_list) == true)
+                    if (erro == false && IsTokenType(this.token_list,TokenTypes.endLine) == true)
                     {
                         this.token_stack.Add(token_list[0]);
                         this.token_list.RemoveAt(0);
