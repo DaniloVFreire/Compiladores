@@ -24,7 +24,7 @@ public class Compiler
         string[] archive_lines;
         int line_counter = 0;
 
-        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\welso\Source\Repos\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
+        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\rfc77\source\Repos\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
 
         foreach (string input_line in archive_lines)
         {
@@ -48,11 +48,21 @@ public class Compiler
             }
         }
 
+        Console.WriteLine("Error = " + lexical_analizer_instance.getError());
         Console.WriteLine("________________________________________________________");
-        syntatic_instance.RunSyntaticAnalizer(this.token_list);
+        if (lexical_analizer_instance.getError() == true)
+        {
+            Console.WriteLine("Analizado Léxico finalizado com Erro, portanto não seguira com a análise sintática");
+        }
+        else
+        {
+            syntatic_instance.RunSyntaticAnalizer(this.token_list);
+        }
+        //syntatic_instance.RunSyntaticAnalizer(this.token_list);
 
         Console.ReadLine();
         return 0;
     }
 
 }
+
