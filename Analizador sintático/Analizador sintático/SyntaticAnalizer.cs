@@ -7,7 +7,7 @@ public class Syntatic
     private List<Token> token_stack;
     private List<Token> token_list;
     private List<Token> token_aux = null;
-    
+
     private List<string> token_Id = new List<string>();
     private List<string> token_Tipo = new List<string>();
     private List<string> token_Pos = new List<string>();
@@ -29,14 +29,18 @@ public class Syntatic
     public string RunSyntaticAnalizer(List<Token> _token_list)
     {
         this.token_list = _token_list;
-        Console.WriteLine(this.token_list);
+        foreach(Token token in token_list)
+        {
+            Console.Write(token.getValue() + " ");
+        }
+        Console.WriteLine(" ");
         FS(this.token_list);
         return "teste";
     }
 
     // Funções auxiliares para ajudar a reconhecer a ordem, e o tipo dos tokens
- 
-    private bool RecGoal (List<Token> _token_list)
+
+    private bool RecGoal(List<Token> _token_list)
     {
         Token i = _token_list[0];
 
@@ -51,7 +55,7 @@ public class Syntatic
         }
     }
 
-    private bool RecAction (List<Token> _token_list)
+    private bool RecAction(List<Token> _token_list)
     {
         Token i = _token_list[0];
 
@@ -233,7 +237,7 @@ public class Syntatic
             return false;
         }
     }
-    
+
     private bool RecParentesisOpen(List<Token> _token_list)
     {
         Token i = _token_list[0];
@@ -281,12 +285,12 @@ public class Syntatic
 
     // Função auxiliar que limpa uma linha de código com erro
 
-    private void ClearLine(List<Token> _token_list, List<Token> _token_aux) 
+    private void ClearLine(List<Token> _token_list, List<Token> _token_aux)
     {
         //quando da erro, limpa a linha e a lista aux até o momento
         if (_token_list.Count > 0)
         {
-            while (this.token_list[0].getType() != "endLine")   token_list.RemoveAt(0);
+            while (this.token_list[0].getType() != "endLine") token_list.RemoveAt(0);
 
             token_list.RemoveAt(0);
         }
@@ -303,7 +307,7 @@ public class Syntatic
     private bool recMoveTowards()
     {
         // Essa função reconhece a ação moveTowards
-        bool erro = false; 
+        bool erro = false;
 
         if (token_list[0].getValue().Equals("moveTowards"))
         {
@@ -333,9 +337,9 @@ public class Syntatic
             }
 
             if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly (this.token_list) == true ||
-                erro == false && RecSelf (this.token_list) == true ||
-                erro == false && RecGoal (this.token_list) == true)
+                erro == false && RecAlly(this.token_list) == true ||
+                erro == false && RecSelf(this.token_list) == true ||
+                erro == false && RecGoal(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -383,7 +387,7 @@ public class Syntatic
                 Console.WriteLine("Error\n");
             }
         }
-         
+
         return !erro;
     }
 
@@ -655,7 +659,7 @@ public class Syntatic
             // Com isso já reconhecemos a palavra sayPosition
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
-                    
+
             // Agora estamos tentando reconhecer o espaço depois da palavra
 
             if (RecDelimiter(this.token_list) == true)
@@ -681,9 +685,9 @@ public class Syntatic
             }
 
             if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly (this.token_list) == true ||
-                erro == false && RecSelf (this.token_list) == true ||
-                erro == false && RecGoal (this.token_list) == true)
+                erro == false && RecAlly(this.token_list) == true ||
+                erro == false && RecSelf(this.token_list) == true ||
+                erro == false && RecGoal(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -693,7 +697,7 @@ public class Syntatic
                 if (erro == false) ClearLine(this.token_list, this.token_aux);
                 erro = true;
             }
-                    
+
             // Tentando reconhecer as virgulas 
             if (erro == false && RecSeparator(this.token_list) == true)
             {
@@ -875,7 +879,7 @@ public class Syntatic
     private bool recActionType()
     {
         // Tentando encontrar a ação realizada, entre os diversos tipos de ações
-       
+
         if (token_list[0].getValue().Equals("explore"))
         {
             return true;
@@ -945,8 +949,8 @@ public class Syntatic
             }
 
             if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly (this.token_list) == true ||
-                erro == false && RecSelf (this.token_list) == true)
+                erro == false && RecAlly(this.token_list) == true ||
+                erro == false && RecSelf(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1171,7 +1175,7 @@ public class Syntatic
     }
 
     private bool recNeighbors()
-    { 
+    {
         // Essa função tenta reconhecer a condição 'neighbors'
 
         bool erro = false;
@@ -1204,9 +1208,9 @@ public class Syntatic
             }
 
             if (erro == false && RecEnemy(this.token_list) == true ||
-                erro == false && RecAlly (this.token_list) == true ||
-                erro == false && RecSelf (this.token_list) == true ||
-                erro == false && RecGoal (this.token_list) == true)
+                erro == false && RecAlly(this.token_list) == true ||
+                erro == false && RecSelf(this.token_list) == true ||
+                erro == false && RecGoal(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
@@ -1314,9 +1318,9 @@ public class Syntatic
 
             // Tentando reconhecer uma ação
 
-            if(RecAction(this.token_list) == true)
+            if (RecAction(this.token_list) == true)
             {
-                if(recActionType() == false)
+                if (recActionType() == false)
                 {
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
@@ -1368,7 +1372,7 @@ public class Syntatic
             }
 
             // Tentando reconhecer o terceiro delimitador
-                    
+
             if (erro == false && RecDelimiter(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
@@ -1425,9 +1429,9 @@ public class Syntatic
 
             // Tentando reconhecer uma condição
 
-            if(RecCondition(this.token_list) == true)
+            if (RecCondition(this.token_list) == true)
             {
-                if(recConditionType() == false)
+                if (recConditionType() == false)
                 {
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
@@ -1479,7 +1483,7 @@ public class Syntatic
             }
 
             // Tentando reconhecer o terceiro delimitador
-                    
+
             if (erro == false && RecDelimiter(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
@@ -1539,12 +1543,12 @@ public class Syntatic
         while (token_list.Count != 0)
         {
             bool erro = false;
-            
+
             // Analisando se existe uma ação na lista de tokens
-            
-            if(RecAction(this.token_list) == true)
+
+            if (RecAction(this.token_list) == true)
             {
-                if(recActionType() == true)
+                if (recActionType() == true)
                 {
                     // Reconhecendo e removendo o ponto final da frase
 
@@ -1571,12 +1575,12 @@ public class Syntatic
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
             }
-            
+
             // Analisando se existe alguma condição na lista de tokens
 
             else if (RecCondition(this.token_list) == true)
             {
-                if(recConditionType() == true)
+                if (recConditionType() == true)
                 {
                     if (erro == false && RecEndLine(this.token_list) == true)
                     {
@@ -1594,7 +1598,7 @@ public class Syntatic
                             Console.WriteLine("Linha ignorada");
                         }
                     }
-                }  
+                }
                 else
                 {
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
@@ -1630,7 +1634,7 @@ public class Syntatic
                 {
                     Console.WriteLine("Não foi possivel identificar uma pergunta na frase");
                 }
-                
+
             }
 
             // Print a error if there is no action, condition or ask
@@ -1651,14 +1655,13 @@ public class Syntatic
         {
             if (t.getType() != "endLine")   Console.WriteLine(t.getType());
             else                            Console.WriteLine(t.getType()+"\n");
-
             
         }*/
 
         for (int i = 0; i < token_Id.Count; i++)
         {
-            if (token_Id[i].Equals(" ")) Console.WriteLine("Comando: "+token_Pos[i]+" Identificador: Space"+" Tipo: "+token_Tipo[i]);
-            else                         Console.WriteLine("Comando: "+token_Pos[i]+" Identificador: "+token_Id[i]+" Tipo: "+token_Tipo[i]);
+            if (token_Id[i].Equals(" ")) Console.WriteLine("Comando: " + token_Pos[i] + " Identificador: Space" + " Tipo: " + token_Tipo[i]);
+            else Console.WriteLine("Comando: " + token_Pos[i] + " Identificador: " + token_Id[i] + " Tipo: " + token_Tipo[i]);
         }
 
         return true;
