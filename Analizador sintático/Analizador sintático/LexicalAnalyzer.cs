@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using static TokenTypes;
 
 public class Lexical_analizer
@@ -84,8 +85,8 @@ public class Lexical_analizer
             }
             if (Error)
             {
-                Console.WriteLine("Finalizando análize lexica com erro");
-                break;
+                //Console.WriteLine("Finalizando análize lexica com erro");
+                //break;
             }
         }
         if (!String.IsNullOrEmpty(word))
@@ -166,8 +167,8 @@ public class Lexical_analizer
             Console.WriteLine("Token Com erro/não definido: " + word);
 
             //para parar caso encontre erro descomente as duas linhas abaixo
-            //this.Error=true;
-            //clearTokenList();
+            this.Error=true;
+           // clearTokenList();
             return error;
 
         }
@@ -198,5 +199,9 @@ public class Lexical_analizer
     private void clearTokenList()
     {//retorna a lista de tokens do estado atual
         this.token_list = new List<Token>();
+    }
+    public bool getError()
+    {
+        return this.Error;
     }
 }
