@@ -7,6 +7,13 @@ public class Syntatic
     private List<Token> token_stack;
     private List<Token> token_list;
     private List<Token> token_aux = null;
+    
+    private List<string> token_Id = new List<string>();
+    private List<string> token_Tipo = new List<string>();
+    private List<string> token_Pos = new List<string>();
+
+    private int pos_Line = 1;
+
     public Syntatic()
     {
         int buffer_position = 0;
@@ -296,87 +303,88 @@ public class Syntatic
     private bool recMoveTowards()
     {
         // Essa função reconhece a ação moveTowards
-         bool erro = false; 
+        bool erro = false; 
 
-         if (token_list[0].getValue().Equals("moveTowards"))
+        if (token_list[0].getValue().Equals("moveTowards"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecEnemy(this.token_list) == true ||
+                erro == false && RecAlly (this.token_list) == true ||
+                erro == false && RecSelf (this.token_list) == true ||
+                erro == false && RecGoal (this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecEnemy(this.token_list) == true ||
-                        erro == false && RecAlly (this.token_list) == true ||
-                        erro == false && RecSelf (this.token_list) == true ||
-                        erro == false && RecGoal (this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
-
-         return !erro;
-
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
+         
+        return !erro;
     }
 
     private bool recSendBall()
@@ -386,80 +394,82 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("sendBall"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecAlly(this.token_list) == true ||
+                erro == false && token_list[0].getValue().Equals("enemyGoal") ||
+                erro == false && RecSelf(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecAlly(this.token_list) == true ||
-                        erro == false && token_list[0].getValue().Equals("enemyGoal") ||
-                        erro == false && RecSelf(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -471,78 +481,80 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("sayOk"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecAlly(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecAlly(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -554,78 +566,80 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("sayNo"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecAlly(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecAlly(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -637,136 +651,138 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("sayPosition"))
+        {
+            // Com isso já reconhecemos a palavra sayPosition
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+                    
+            // Agora estamos tentando reconhecer o espaço depois da palavra
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecEnemy(this.token_list) == true ||
+                erro == false && RecAlly (this.token_list) == true ||
+                erro == false && RecSelf (this.token_list) == true ||
+                erro == false && RecGoal (this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+                    
+            // Tentando reconhecer as virgulas 
+            if (erro == false && RecSeparator(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+            // Fim do reconhecimento das virgulas
+
+            // Tentando reconhecer o numero
+            if (erro == false && RecNumber(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+            // Fim do reconhecimento do numero
+
+            // Tentando reconhecer as virgulas 
+            if (erro == false && RecSeparator(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+            // Fim do reconhecimento das virgulas
+
+            // Tentando reconhecer o numero
+            if (erro == false && RecNumber(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+            // Fim do reconhecimento do numero
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    // Com isso já reconhecemos a palavra sayPosition
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-                    
-                    // Agora estamos tentando reconhecer o espaço depois da palavra
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecEnemy(this.token_list) == true ||
-                        erro == false && RecAlly (this.token_list) == true ||
-                        erro == false && RecSelf (this.token_list) == true ||
-                        erro == false && RecGoal (this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-                    
-                    // Tentando reconhecer as virgulas 
-                    if (erro == false && RecSeparator(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-                    // Fim do reconhecimento das virgulas
-
-                    // Tentando reconhecer o numero
-                    if (erro == false && RecNumber(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-                    // Fim do reconhecimento do numero
-
-                    // Tentando reconhecer as virgulas 
-                    if (erro == false && RecSeparator(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-                    // Fim do reconhecimento das virgulas
-
-                    // Tentando reconhecer o numero
-                    if (erro == false && RecNumber(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-                    // Fim do reconhecimento do numero
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -776,78 +792,80 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("help"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecAlly(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecAlly(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -900,80 +918,82 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("carryingBall"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecEnemy(this.token_list) == true ||
+                erro == false && RecAlly (this.token_list) == true ||
+                erro == false && RecSelf (this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecEnemy(this.token_list) == true ||
-                        erro == false && RecAlly (this.token_list) == true ||
-                        erro == false && RecSelf (this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -983,80 +1003,82 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("marked"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecEnemy(this.token_list) == true ||
+                erro == false && RecAlly(this.token_list) == true ||
+                erro == false && RecSelf(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecEnemy(this.token_list) == true ||
-                        erro == false && RecAlly(this.token_list) == true ||
-                        erro == false && RecSelf(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -1068,80 +1090,82 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("position"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecEnemy(this.token_list) == true ||
+                erro == false && RecAlly(this.token_list) == true ||
+                erro == false && RecSelf(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecEnemy(this.token_list) == true ||
-                        erro == false && RecAlly(this.token_list) == true ||
-                        erro == false && RecSelf(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -1153,81 +1177,83 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("neighbors"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecEnemy(this.token_list) == true ||
+                erro == false && RecAlly (this.token_list) == true ||
+                erro == false && RecSelf (this.token_list) == true ||
+                erro == false && RecGoal (this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecEnemy(this.token_list) == true ||
-                        erro == false && RecAlly (this.token_list) == true ||
-                        erro == false && RecSelf (this.token_list) == true ||
-                        erro == false && RecGoal (this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -1269,106 +1295,108 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("askAction"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            // Reconhecendo o primeiro delimitador
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer uma ação
+
+            if(RecAction(this.token_list) == true)
+            {
+                if(recActionType() == false)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    // Reconhecendo o primeiro delimitador
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer uma ação
-
-                    if(RecAction(this.token_list) == true)
-                    {
-                        if(recActionType() == false)
-                        {
-                            Console.WriteLine("Não foi possivel identificar uma ação na frase");
-                        }
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    //OBS: o segundo delimitador já é reconhecido na função que reconhece a ação
-
-                    //Tentando reconhecer open_parentesis
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer um aliado
-
-                    if (erro == false && RecAlly(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer close parentesis
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer o terceiro delimitador
-                    
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Removendo os tokens da lista, e adicionando na stack
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            //OBS: o segundo delimitador já é reconhecido na função que reconhece a ação
+
+            //Tentando reconhecer open_parentesis
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer um aliado
+
+            if (erro == false && RecAlly(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer close parentesis
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer o terceiro delimitador
+                    
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Removendo os tokens da lista, e adicionando na stack
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
+                {
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -1378,106 +1406,108 @@ public class Syntatic
         bool erro = false;
 
         if (token_list[0].getValue().Equals("askInfo"))
+        {
+            this.token_aux.Add(token_list[0]);
+            this.token_list.RemoveAt(0);
+
+            // Reconhecendo o primeiro delimitador
+
+            if (RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer uma condição
+
+            if(RecCondition(this.token_list) == true)
+            {
+                if(recConditionType() == false)
                 {
-                    this.token_aux.Add(token_list[0]);
-                    this.token_list.RemoveAt(0);
-
-                    // Reconhecendo o primeiro delimitador
-
-                    if (RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer uma condição
-
-                    if(RecCondition(this.token_list) == true)
-                    {
-                        if(recConditionType() == false)
-                        {
-                            Console.WriteLine("Não foi possivel identificar uma condição na frase");
-                        }
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    //OBS: o segundo delimitador já é reconhecido na função que reconhece a condição
-
-                    //Tentando reconhecer open_parentesis
-
-                    if (erro == false && RecParentesisOpen(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer um aliado
-
-                    if (erro == false && RecAlly(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer close parentesis
-                    if (erro == false && RecParentesisClosed(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Tentando reconhecer o terceiro delimitador
-                    
-                    if (erro == false && RecDelimiter(this.token_list) == true)
-                    {
-                        this.token_aux.Add(token_list[0]);
-                        this.token_list.RemoveAt(0);
-                    }
-                    else
-                    {
-                        if (erro == false) ClearLine(this.token_list, this.token_aux);
-                        erro = true;
-                    }
-
-                    // Removendo os tokens da lista, e adicionando na stack
-
-                    if (erro == false)
-                    {
-                        while (token_aux.Count != 0)
-                        {
-                            this.token_stack.Add(this.token_aux[0]);
-                            this.token_aux.RemoveAt(0);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error\n");
-                    }
+                    Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            //OBS: o segundo delimitador já é reconhecido na função que reconhece a condição
+
+            //Tentando reconhecer open_parentesis
+
+            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer um aliado
+
+            if (erro == false && RecAlly(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer close parentesis
+            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Tentando reconhecer o terceiro delimitador
+                    
+            if (erro == false && RecDelimiter(this.token_list) == true)
+            {
+                this.token_aux.Add(token_list[0]);
+                this.token_list.RemoveAt(0);
+            }
+            else
+            {
+                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                erro = true;
+            }
+
+            // Removendo os tokens da lista, e adicionando na stack
+
+            if (erro == false)
+            {
+                while (token_aux.Count != 0)
+                {
+                    this.token_Id.Add(this.token_aux[0].getValue());
+                    this.token_Tipo.Add(this.token_aux[0].getType());
+                    this.token_Pos.Add(this.pos_Line.ToString());
+                    this.token_aux.RemoveAt(0);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error\n");
+            }
+        }
 
         return !erro;
     }
@@ -1520,7 +1550,9 @@ public class Syntatic
 
                     if (erro == false && RecEndLine(this.token_list) == true)
                     {
-                        this.token_stack.Add(token_list[0]);
+                        this.token_Id.Add(this.token_list[0].getValue());
+                        this.token_Tipo.Add(this.token_list[0].getType());
+                        this.token_Pos.Add(this.pos_Line.ToString());
                         this.token_list.RemoveAt(0);
                     }
                     else
@@ -1548,7 +1580,9 @@ public class Syntatic
                 {
                     if (erro == false && RecEndLine(this.token_list) == true)
                     {
-                        this.token_stack.Add(token_list[0]);
+                        this.token_Id.Add(this.token_list[0].getValue());
+                        this.token_Tipo.Add(this.token_list[0].getType());
+                        this.token_Pos.Add(this.pos_Line.ToString());
                         this.token_list.RemoveAt(0);
                     }
                     else
@@ -1577,7 +1611,9 @@ public class Syntatic
                 {
                     if (erro == false && RecEndLine(this.token_list) == true)
                     {
-                        this.token_stack.Add(token_list[0]);
+                        this.token_Id.Add(this.token_list[0].getValue());
+                        this.token_Tipo.Add(this.token_list[0].getType());
+                        this.token_Pos.Add(this.pos_Line.ToString());
                         this.token_list.RemoveAt(0);
                     }
                     else
@@ -1604,15 +1640,27 @@ public class Syntatic
                 ClearLine(this.token_list, this.token_aux);
                 Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
             }
+
+            //incrementando a posição dos comandos
+            pos_Line++;
         }
 
         // Print the token stack
 
-        foreach (var t in this.token_stack)
+        /*foreach (var t in this.token_stack)
         {
             if (t.getType() != "endLine")   Console.WriteLine(t.getType());
             else                            Console.WriteLine(t.getType()+"\n");
+
+            
+        }*/
+
+        for (int i = 0; i < token_Id.Count; i++)
+        {
+            if (token_Id[i].Equals(" ")) Console.WriteLine("Comando: "+token_Pos[i]+" Identificador: Space"+" Tipo: "+token_Tipo[i]);
+            else                         Console.WriteLine("Comando: "+token_Pos[i]+" Identificador: "+token_Id[i]+" Tipo: "+token_Tipo[i]);
         }
 
         return true;
     }
+}

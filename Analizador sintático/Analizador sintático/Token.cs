@@ -41,6 +41,10 @@ public class Token
 		this.scope = _scope;
 	}
 
+	public string getPosition()
+	{
+		return this.position.ToString();
+	}
 	public string getType()
 	{
 		return this.type.ToString();
