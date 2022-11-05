@@ -45,6 +45,10 @@ public class Token
 	{
 		return this.position.ToString();
 	}
+	public Tuple<int, int> getPositionInt()
+	{
+		return this.position;
+	}
 	public string getType()
 	{
 		return this.type.ToString();

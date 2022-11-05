@@ -1,4 +1,2 @@
-sayOk (allyNa8 .
-carryingBall (enemyNb1) .
-sendBall (self) .
-
+askAction sayOk (allyNa8) .
+askAction sayOk (allyNa8) .

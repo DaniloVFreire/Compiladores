@@ -24,7 +24,7 @@ public class Compiler
         string[] archive_lines;
         int line_counter = 0;
 
-        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\rfc77\source\Repos\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
+        archive_lines = System.IO.File.ReadAllLines(@"C:\Users\welso\OneDrive\Documentos\GitHub\Compiladores\Analizador sintático\Analizador sintático\WriteText.txt");
 
         foreach (string input_line in archive_lines)
         {
