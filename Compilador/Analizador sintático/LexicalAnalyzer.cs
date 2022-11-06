@@ -1,28 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Utilities;
 using static TokenTypes;
 
 public class Lexical_analizer
 {
     private List<Token> token_list;
-    private bool verbose;
+    private Utils utils;
     private int stringInsertionPosition;
     private int wordStartPosition;
     private string word;
     bool Error;
-    public Lexical_analizer()
+    public Lexical_analizer(Utils _utils)
     {
-        constructorConvergence();
-        this.verbose = false;
-    }
-    public Lexical_analizer(bool _verbose)
-    {
-        constructorConvergence();
-        this.verbose = _verbose;
-    }
-    void constructorConvergence()
-    {
+        this.utils = _utils;
         this.token_list = new List<Token>();
         stringInsertionPosition = 0;
         wordStartPosition = 0;
@@ -48,13 +40,14 @@ public class Lexical_analizer
     }
     public void RunLexicalAnalizer(string input_line, int line)
     {
-        //if(verbose) Console.WriteLine("Lendo linha");
+        utils.Verbose("Lendo linha");
         for (int i = 0; i < input_line.Length; ++i)
         {
             if (/*input_line[i] != ' ' && */String.IsNullOrEmpty(word))
             {//inicializa a cadeia do token em word
                 this.wordStartPosition = i;
-                // Console.WriteLine("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+                utils.Verbose("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+
 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
@@ -62,7 +55,7 @@ public class Lexical_analizer
                 if (input_line[i] == '.' || input_line[i] == ',' ||
                 input_line[i] == '(' || input_line[i] == ')')
                 {//se o símbolo incial da cadeia for um "fechador"
-                    //Console.WriteLine("cadeia de tamanho 1 finalizada com: " + input_line[i]);
+                    utils.Verbose("cadeia de tamanho 1 finalizada com: " + input_line[i]);
                     generateAndAppendToken(line, this.wordStartPosition, word, true);
                 }
             }
@@ -70,28 +63,28 @@ public class Lexical_analizer
                 !(input_line[i] == ' ' || input_line[i] == '.' || input_line[i] == ',' ||
                 input_line[i] == '(' || input_line[i] == ')'))
             {//continuando a cadeia do token em word
-                //if (verbose) Console.WriteLine("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
+                utils.Verbose("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
             }
             else if (!String.IsNullOrEmpty(word))
             {//finaliza a cadeia do token
-                //if (verbose) Console.WriteLine("token encontrado: " + word);
-                //if (verbose) Console.WriteLine("cadeia finalizada com: " + input_line[i]);
+                utils.Verbose("token encontrado: " + word);
+                utils.Verbose("cadeia finalizada com: " + input_line[i]);
 
                 generateAndAppendToken(line, this.wordStartPosition, word, false);
                 generateAndAppendToken(line, this.wordStartPosition + word.Length, Char.ToString(input_line[i]), true);
             }
             if (Error)
             {
-                //Console.WriteLine("Finalizando análize lexica com erro");
+                Console.WriteLine("Finalizando análize lexica com erro");
                 //break;
             }
         }
         if (!String.IsNullOrEmpty(word))
         {//finaliza a cadeia do token
-            //if (verbose) Console.WriteLine("token encontrado fora do loop: " + word);
+            utils.Verbose("token encontrado fora do loop: " + word);
 
             generateAndAppendToken(line, this.wordStartPosition, word, true);
         }

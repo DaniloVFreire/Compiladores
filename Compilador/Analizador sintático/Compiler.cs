@@ -1,32 +1,27 @@
+using Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 public class Compiler
 {
     private List<Token> token_list;
-    private bool verbose;
-    public Compiler()
+    private Utils utils;
+    public Compiler(Utils _utils)
     {
         this.token_list = new List<Token>();
-        this.verbose = false;
-    }
-    public Compiler(bool _verbose)
-    {
-        this.token_list = new List<Token>();
-        this.verbose = _verbose;
+        this.utils = _utils;
     }
     public int RunCompilation()
     {
-        Lexical_analizer lexical_analizer_instance = new Lexical_analizer(verbose);
+        Lexical_analizer lexical_analizer_instance = new Lexical_analizer(utils);
         Syntatic syntatic_instance = new Syntatic();
         string[] archive_lines;
         int line_counter = 0;
         string fileName = "WriteText.txt";
         string path = Path.Combine(Environment.CurrentDirectory, @"Data\", fileName);
-        Console.WriteLine(path);
+        utils.Verbose(path);
         archive_lines = File.ReadAllLines(path);
-        
+
         foreach (string input_line in archive_lines)
         {
             Console.WriteLine(input_line);
@@ -36,21 +31,21 @@ public class Compiler
                 lexical_analizer_instance.RunLexicalAnalizer(input_line, line_counter);
                 line_counter++;
             }
-            //if (verbose) Console.WriteLine("Fim da análize léxica");
+            utils.Verbose("Fim da análize léxica");
         }
 
         this.token_list = lexical_analizer_instance.getTokenList();
-        if (verbose && token_list.Count > 0)
+        if (token_list.Count > 0)
         {//mostra a lista recebida do analizador léxico
          //Console.WriteLine("Tokens recebidos no compilador");
             foreach (var token in token_list)
             {
-                Console.WriteLine(token);
+                utils.Verbose(token.ToString());
             }
         }
 
+        utils.Verbose("________________________________________________________");
         Console.WriteLine("Error = " + lexical_analizer_instance.getError());
-        Console.WriteLine("________________________________________________________");
         if (lexical_analizer_instance.getError() == true)
         {
             Console.WriteLine("Analizado Léxico finalizado com Erro, portanto não seguira com a análise sintática");
@@ -59,11 +54,9 @@ public class Compiler
         {
             syntatic_instance.RunSyntaticAnalizer(this.token_list);
         }
-        //syntatic_instance.RunSyntaticAnalizer(this.token_list);
 
         Console.ReadLine();
         return 0;
     }
 
 }
-
