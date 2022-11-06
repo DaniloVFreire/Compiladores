@@ -1,2 +1,0 @@
-askAction sayOk (allyNa8) .
-askAction sayOk (allyNa8) .
