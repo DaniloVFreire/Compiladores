@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="LexicalAnalyzer.cs" />
     <Compile Include="Program.cs" />
