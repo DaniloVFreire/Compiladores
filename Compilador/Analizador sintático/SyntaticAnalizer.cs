@@ -273,20 +273,21 @@ public class Syntatic
     }
 
     // Função auxiliar que limpa uma linha de código com erro
-
-    private void ClearLine(List<Token> _token_list, List<Token> _token_aux)
+    private void ClearLineList(List<Token> _token_list)
     {
-        //NÂO É MAIS NECESSÁRIO
-
         //quando da erro, limpa a linha e a lista aux até o momento
-        /*if (_token_list.Count > 0)
+
+        if (_token_list.Count > 0)
         {
             while (this.token_list[0].getType() != "endLine") token_list.RemoveAt(0);
-
+            
             token_list.RemoveAt(0);
-        }*/
+        }
+    }
+    private void ClearListAux(List<Token> _token_aux)
+    {
+        //quando da erro, limpa a linha e a lista aux até o momento
 
-        //ESSA É
         if (_token_aux.Count > 0)
         {
             while (this.token_aux.Count > 0) token_aux.RemoveAt(0);
@@ -314,7 +315,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -330,7 +331,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -349,7 +350,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
@@ -365,7 +366,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -381,7 +382,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -427,7 +428,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -443,7 +444,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -461,7 +462,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID aliado' ou 'auto ID' ou 'ID inimigo'", TokenTypes.error));
@@ -478,7 +479,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -494,7 +495,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -532,7 +533,7 @@ public class Syntatic
         {
             this.token_aux.Add(token_list[0]);
             this.token_list.RemoveAt(0);
-
+            
             if (RecDelimiter(this.token_list) == true)
             {
                 this.token_aux.Add(token_list[0]);
@@ -540,7 +541,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -548,7 +549,7 @@ public class Syntatic
                 this.token_list.RemoveAt(0);*/
                 erro = true;
             }
-
+            
             if (RecParentesisOpen(this.token_list) == true)
             {
                 if (erro == false)  this.token_aux.Add(token_list[0]);
@@ -556,15 +557,15 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
                 
-                this.token_list.RemoveAt(0);
+                //this.token_list.RemoveAt(0);
                 erro = true;
             }
-
+            
             if (RecAlly(this.token_list) == true)
             {
                 if (erro == false)  this.token_aux.Add(token_list[0]);
@@ -572,7 +573,8 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                Console.WriteLine("skdjf0");
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID aliado'", TokenTypes.error));
@@ -581,7 +583,7 @@ public class Syntatic
 
                 erro = true;
             }
-
+            
             if (RecParentesisClosed(this.token_list) == true)
             {
                 if (erro == false)  this.token_aux.Add(token_list[0]);
@@ -589,7 +591,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -605,7 +607,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -651,7 +653,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -667,7 +669,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -683,7 +685,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID aliado'", TokenTypes.error));
@@ -699,7 +701,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -715,7 +717,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -764,7 +766,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -780,7 +782,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -799,7 +801,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
@@ -816,7 +818,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ','", TokenTypes.error));
@@ -834,7 +836,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'num'", TokenTypes.error));
@@ -852,7 +854,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ','", TokenTypes.error));
@@ -870,7 +872,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'num'", TokenTypes.error));
@@ -887,7 +889,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -903,7 +905,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -947,7 +949,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -963,7 +965,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -979,7 +981,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID aliado'", TokenTypes.error));
@@ -996,7 +998,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -1012,7 +1014,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1099,7 +1101,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1115,7 +1117,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -1133,7 +1135,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID agente'", TokenTypes.error));
@@ -1150,7 +1152,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -1166,7 +1168,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1210,7 +1212,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1226,7 +1228,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -1244,7 +1246,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID agente'", TokenTypes.error));
@@ -1261,7 +1263,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -1277,7 +1279,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1323,7 +1325,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1339,7 +1341,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -1357,7 +1359,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID agente'", TokenTypes.error));
@@ -1374,7 +1376,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -1390,7 +1392,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1436,7 +1438,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1452,7 +1454,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -1471,7 +1473,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID agente'", TokenTypes.error));
@@ -1488,7 +1490,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -1504,7 +1506,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1582,7 +1584,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1590,7 +1592,7 @@ public class Syntatic
                 this.token_list.RemoveAt(0);*/
                 erro = true;
             }
-
+            
             // Tentando reconhecer uma ação
 
             if (RecAction(this.token_list) == true)
@@ -1598,26 +1600,25 @@ public class Syntatic
                 if (recActionType() == false)
                 {
                     erro = true;
+                    this.token_list.RemoveAt(0);
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
-                
-                this.token_list.RemoveAt(0);
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'action'", TokenTypes.error));
                 
-                //this.token_list.RemoveAt(0);
+                this.token_list.RemoveAt(0);
                 erro = true;
             }
 
             //OBS: o segundo delimitador já é reconhecido na função que reconhece a ação
 
             //Tentando reconhecer open_parentesis
-
+            
             if (RecParentesisOpen(this.token_list) == true)
             {
                 if (erro == false)  this.token_aux.Add(token_list[0]);
@@ -1625,7 +1626,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
@@ -1641,7 +1642,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'ID aliado'", TokenTypes.error));
@@ -1658,7 +1659,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
@@ -1674,7 +1675,7 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
 
                 /*Tuple<int, int> pos = getPosInt(token_list);
                 this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
@@ -1720,7 +1721,13 @@ public class Syntatic
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
+
+                /*Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
+
+                this.token_list.RemoveAt(0);*/
+
                 erro = true;
             }
 
@@ -1730,12 +1737,19 @@ public class Syntatic
             {
                 if (recConditionType() == false)
                 {
+                    erro = true;
+                    this.token_list.RemoveAt(0);
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
+
+                Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando 'condition'", TokenTypes.error));
+                
+                this.token_list.RemoveAt(0);
                 erro = true;
             }
 
@@ -1743,56 +1757,72 @@ public class Syntatic
 
             //Tentando reconhecer open_parentesis
 
-            if (erro == false && RecParentesisOpen(this.token_list) == true)
+            if (RecParentesisOpen(this.token_list) == true)
             {
-                this.token_aux.Add(token_list[0]);
+                if (erro == false)  this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
+
+                Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando '('", TokenTypes.error));
+                
+                this.token_list.RemoveAt(0);
                 erro = true;
             }
 
-            // Tentando reconhecer um aliado
-
-            if (erro == false && RecAlly(this.token_list) == true)
+            if (RecAlly(this.token_list) == true)
             {
-                this.token_aux.Add(token_list[0]);
+                if (erro == false)  this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
+
+                Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando 'ID aliado'", TokenTypes.error));
+                
+                this.token_list.RemoveAt(0);
+
                 erro = true;
             }
 
-            // Tentando reconhecer close parentesis
-            if (erro == false && RecParentesisClosed(this.token_list) == true)
+            if (RecParentesisClosed(this.token_list) == true)
             {
-                this.token_aux.Add(token_list[0]);
+                if (erro == false)  this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
+
+                Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando ')'", TokenTypes.error));
+                
+                this.token_list.RemoveAt(0);
                 erro = true;
             }
 
-            // Tentando reconhecer o terceiro delimitador
-
-            if (erro == false && RecDelimiter(this.token_list) == true)
+            if (RecDelimiter(this.token_list) == true)
             {
-                this.token_aux.Add(token_list[0]);
+                if (erro == false)  this.token_aux.Add(token_list[0]);
                 this.token_list.RemoveAt(0);
             }
             else
             {
-                if (erro == false) ClearLine(this.token_list, this.token_aux);
+                if (erro == false) ClearListAux(this.token_aux);
+
+                /*Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando 'blank'", TokenTypes.error));
+                
+                this.token_list.RemoveAt(0);*/
                 erro = true;
             }
 
-            // Removendo os tokens da lista, e adicionando na stack
+            // Removendo os tokens da lista aux, e adicionando na stack
 
             if (erro == false)
             {
@@ -1847,13 +1877,15 @@ public class Syntatic
             {
                 if (recActionType() == true)
                 {
-                    // Reconhecendo e removendo o ponto final da frase
-
                     if (RecEndLine(this.token_list) == true)
                     {
-                        this.token_Id.Add(this.token_list[0].getValue());
-                        this.token_Tipo.Add(this.token_list[0].getType());
-                        this.token_Pos.Add(this.pos_Line.ToString());
+                        if (erro == false)
+                        {
+                            this.token_Id.Add(this.token_list[0].getValue());
+                            this.token_Tipo.Add(this.token_list[0].getType());
+                            this.token_Pos.Add(this.pos_Line.ToString());
+                        }
+                        
                         this.token_list.RemoveAt(0);
                     }
                     else
@@ -1862,7 +1894,6 @@ public class Syntatic
                         {
                             erro = true;
                             Console.WriteLine("Esperando um '.' ao final do comando 'action'");
-                            this.token_stack.Add(token_list[0]);
                             Console.WriteLine("Linha ignorada");
                         }
                     }
@@ -1880,11 +1911,15 @@ public class Syntatic
             {
                 if (recConditionType() == true)
                 {
-                    if (erro == false && RecEndLine(this.token_list) == true)
+                    if (RecEndLine(this.token_list) == true)
                     {
-                        this.token_Id.Add(this.token_list[0].getValue());
-                        this.token_Tipo.Add(this.token_list[0].getType());
-                        this.token_Pos.Add(this.pos_Line.ToString());
+                        if (erro == false)
+                        {
+                            this.token_Id.Add(this.token_list[0].getValue());
+                            this.token_Tipo.Add(this.token_list[0].getType());
+                            this.token_Pos.Add(this.pos_Line.ToString());
+                        }
+                        
                         this.token_list.RemoveAt(0);
                     }
                     else
@@ -1912,11 +1947,15 @@ public class Syntatic
 
                 if (recAskType() == true)
                 {
-                    if (erro == false && RecEndLine(this.token_list) == true)
+                    if (RecEndLine(this.token_list) == true)
                     {
-                        this.token_Id.Add(this.token_list[0].getValue());
-                        this.token_Tipo.Add(this.token_list[0].getType());
-                        this.token_Pos.Add(this.pos_Line.ToString());
+                        if (erro == false)
+                        {
+                            this.token_Id.Add(this.token_list[0].getValue());
+                            this.token_Tipo.Add(this.token_list[0].getType());
+                            this.token_Pos.Add(this.pos_Line.ToString());
+                        }
+                        
                         this.token_list.RemoveAt(0);
                     }
                     else
@@ -1941,7 +1980,11 @@ public class Syntatic
 
             else
             {
-                ClearLine(this.token_list, this.token_aux);
+                Tuple<int, int> pos = getPosInt(token_list);
+                this.token_stack.Add(new Token(pos, "Esperando 'action', 'condition' ou 'ask'", TokenTypes.error));
+
+                ClearLineList(this.token_list);
+
                 Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
             }
 
@@ -1956,7 +1999,7 @@ public class Syntatic
             Console.WriteLine(t);
         }
         Console.WriteLine("-------------------------------------------------");
-
+        
         for (int i = 0; i < token_Id.Count; i++)
         {
             if (token_Id[i].Equals(" ")) Console.WriteLine("Comando: " + token_Pos[i] + " Identificador: Space" + " Tipo: " + token_Tipo[i]);
