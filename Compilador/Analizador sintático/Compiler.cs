@@ -14,7 +14,7 @@ public class Compiler
     public int RunCompilation()
     {
         Lexical_analizer lexical_analizer_instance = new Lexical_analizer(utils);
-        Syntatic syntatic_instance = new Syntatic();
+        Syntatic syntatic_instance = new Syntatic(utils);
         string[] archive_lines;
         int line_counter = 0;
         string fileName = "WriteText.txt";

@@ -1,3 +1,1 @@
-saOk (allyNn7) .askAction sendBall () (allyNd4) .
-carryingBall enemyNj4) .
-askInfo position (self) (allyNh1) .
+sayOk(allyNn7) 
