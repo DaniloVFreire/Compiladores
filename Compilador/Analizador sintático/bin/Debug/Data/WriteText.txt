@@ -1,2 +1,1 @@
-sayOk (allyNn7) .
-sayNo (allyNn7) .
+askInfo position self) (allyNh1) .

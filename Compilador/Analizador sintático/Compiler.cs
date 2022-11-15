@@ -52,7 +52,7 @@ public class Compiler
         }
         else
         {
-            //Console.WriteLine("entrei");
+            Console.WriteLine("Iniciando analise sintática");
             syntatic_instance.RunSyntaticAnalizer(this.token_list);
         }
 
