@@ -14,7 +14,7 @@ public class Syntatic
 
     private List<Token> new_token_list = new List<Token>();
 
-    private int pos_Line = 1;
+    private Token tracking_token = new Token(new Tuple<int,int>(1,1), " ", TokenTypes.error);
 
     public Syntatic(Utils _utils)
     {
@@ -41,25 +41,27 @@ public class Syntatic
         {
             bool erro = false;
 
-            if (RecAction(this.input_token_list[0]) == true)// Analisando se existe uma ação na lista de tokens
+            if (this.input_token_list.Count > 0 && RecAction(this.input_token_list[0]) == true)// Analisando se existe uma ação na lista de tokens
             {
-                if (recActionType() == true)
+                if (this.input_token_list.Count > 0 && recActionType() == true)
                 {
-                    if (RecEndLine(this.input_token_list[0]) == true)
+                    utils.Verbose("FS() recActionType() == true");
+                    if (this.input_token_list.Count > 0 && RecEndLine(this.input_token_list[0]) == true)
                     {
                         if (erro == false)
                         {
-                            utils.Verbose(this.input_token_list[0].ToString());
+                            //utils.Verbose(this.input_token_list[0].ToString());
                             this.new_token_list.Add(this.input_token_list[0]);
                         }
 
-                        this.input_token_list.RemoveAt(0);
+                        clearCurrentPosition();
                     }
                     else
                     {
                         if (erro == false)
                         {
                             erro = true;
+                            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), $"Esperando '.'", TokenTypes.error));
                             Console.WriteLine("Esperando um '.' ao final do comando 'action'");
                             Console.WriteLine("Linha ignorada");
                         }
@@ -67,27 +69,25 @@ public class Syntatic
                 }
                 else
                 {
-                    if(input_token_list.Count != 0){
-                        this.input_token_list.RemoveAt(0);
-                    }
-                    else{
-                        Console.WriteLine("Erro, ponto não encontrado");
+                    utils.Verbose("FS() recActionType() == false");
+                    if (this.input_token_list.Count > 0 && input_token_list.Count != 0){
+                        clearCurrentPosition();
                     }
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
             }
-            else if (RecCondition(this.input_token_list[0]) == true)// Analisando se existe alguma condição na lista de tokens
+            else if (this.input_token_list.Count > 0 && RecCondition(this.input_token_list[0]) == true)// Analisando se existe alguma condição na lista de tokens
             {
-                if (recConditionType() == true)
+                if (this.input_token_list.Count > 0 && recConditionType() == true)
                 {
-                    if (RecEndLine(this.input_token_list[0]) == true)
+                    if (this.input_token_list.Count > 0 && RecEndLine(this.input_token_list[0]) == true)
                     {
                         if (erro == false)
                         {
                             this.new_token_list.Add(this.input_token_list[0]);
                         }
                         
-                        this.input_token_list.RemoveAt(0);
+                        clearCurrentPosition();
                     }
                     else
                     {
@@ -101,23 +101,23 @@ public class Syntatic
                 }
                 else
                 {
-                    this.input_token_list.RemoveAt(0);
+                    clearCurrentPosition();
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
             }
-            else if (RecAsk(this.input_token_list[0]) == true) // Analisando se existe alguma pergunta na lista de tokens
+            else if (this.input_token_list.Count > 0 && RecAsk(this.input_token_list[0]) == true) // Analisando se existe alguma pergunta na lista de tokens
             {
                 // Reconhecendo e removendo o ponto final da frase
-                if (recAskType() == true)
+                if (this.input_token_list.Count > 0 && recAskType() == true)
                 {
-                    if (RecEndLine(this.input_token_list[0]) == true)
+                    if (this.input_token_list.Count > 0 && RecEndLine(this.input_token_list[0]) == true)
                     {
                         if (erro == false)
                         {
                             this.new_token_list.Add(this.input_token_list[0]);
                         }
                         
-                        this.input_token_list.RemoveAt(0);
+                        clearCurrentPosition();
                     }
                     else
                     {
@@ -131,7 +131,7 @@ public class Syntatic
                 }
                 else
                 {
-                    this.input_token_list.RemoveAt(0);
+                    clearCurrentPosition();
                     Console.WriteLine("Não foi possivel identificar uma pergunta na frase");
                 }
 
@@ -146,16 +146,14 @@ public class Syntatic
                 Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
             }
 
-            //incrementando a posição dos comandos
-            pos_Line++;
         }
 
         // Print the token stack
 
-        foreach (var t in this.errors_list)
-        {
-            Console.WriteLine(t);
-        }
+        //foreach (var t in this.errors_list)
+        //{
+          //  Console.WriteLine(t);
+        //}
         Console.WriteLine("-------------------------------------------------");
         utils.Verbose("new token list");
         for (int i = 0; i < new_token_list.Count; i++)
@@ -172,42 +170,47 @@ public class Syntatic
     private bool recActionType()
     {
         // Tentando encontrar a ação realizada, entre os diversos tipos de ações
-
-        if (input_token_list[0].getValue().Equals("explore"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("explore"))
         {
+            utils.Verbose("recActionType() explore");
             return true;
         }
-        else if (input_token_list[0].getValue().Equals("moveTowards"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("moveTowards"))
         {
+            utils.Verbose("recActionType() moveTowards");
             return recMoveTowards();
         }
-        else if (input_token_list[0].getValue().Equals("sendBall"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sendBall"))
         {
+            utils.Verbose("recActionType() sendBall");
             return recSendBall();
         }
-        else if (input_token_list[0].getValue().Equals("sayOk"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sayOk"))
         {
+            utils.Verbose("recActionType() sayOk");
             return recSayOK();
         }
-        else if (input_token_list[0].getValue().Equals("sayNo"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sayNo"))
         {
+            utils.Verbose("recActionType() sayNo");
             return recSayNO();
         }
-        else if (input_token_list[0].getValue().Equals("sayPosition"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sayPosition"))
         {
+            utils.Verbose("recActionType() sayPosition");
             return recSayPosition();
         }
-        else if (input_token_list[0].getValue().Equals("help"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("help"))
         {
+            utils.Verbose("recActionType() help");
             return recHelp();
         }
         else
         {
+            utils.Verbose("recActionType() return false");
             return false;
         }
-
     }
-
         // Funções que realizam o reconhecimento das ações
 
     private bool recMoveTowards()
@@ -215,91 +218,91 @@ public class Syntatic
         // Essa função reconhece a ação moveTowards
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("moveTowards"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("moveTowards"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecEnemy(this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecEnemy(this.input_token_list[0]) == true ||
                  RecAlly(this.input_token_list[0]) == true ||
                  RecSelf(this.input_token_list[0]) == true ||
                  RecObjects(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -326,91 +329,91 @@ public class Syntatic
 
         bool erro = false;
         
-        if (input_token_list[0].getValue().Equals("sendBall"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sendBall"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly(this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true ||
                 input_token_list[0].getValue().Equals("enemyGoal") ||
                 RecSelf(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado' ou 'auto ID' ou 'ID inimigo'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -437,90 +440,100 @@ public class Syntatic
 
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("sayOk"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sayOk"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
             
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
+                utils.Verbose("recSayOK() RecDelimiter() == true");
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                utils.Verbose("recSayOK() RecDelimiter() == false");
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
-                /*
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
+                
+                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ' '", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                //clearCurrentPosition();
                 erro = true;
             }
             
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
+                utils.Verbose("recSayOK() RecParentesisOpen() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                utils.Verbose("recSayOK() RecParentesisOpen() == false");
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
+                this.errors_list.Add(new Token(tracking_token.getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                //this.input_token_list.RemoveAt(0);
+                //clearCurrentPosition();
                 erro = true;
             }
             
-            if (RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
             {
+                utils.Verbose("recSayOK() RecAlly() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                Console.WriteLine("skdjf0");
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                utils.Verbose("recSayOK() RecAlly() == false");
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
+                this.errors_list.Add(new Token(tracking_token.getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                if(this.input_token_list.Count > 0) clearCurrentPosition();
 
                 erro = true;
             }
             
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
+                utils.Verbose("recSayOK() RecParentesisClosed() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                utils.Verbose("recSayOK() RecParentesisClosed() == false");
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
+                this.errors_list.Add(new Token(tracking_token.getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                if(this.input_token_list.Count > 0) clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
+                utils.Verbose("recSayOK() RecDelimiter() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                utils.Verbose("recSayOK() RecDelimiter() == false");
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), $"Esperando ' '", TokenTypes.error));
 
-                /*
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                this.errors_list.Add(new Token(tracking_token.getPositionInt(), "Esperando 'blank'", TokenTypes.error));
+                
+                if(this.input_token_list.Count > 0) clearCurrentPosition();
                 erro = true;
             }
 
@@ -547,88 +560,88 @@ public class Syntatic
 
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("sayNo"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sayNo"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-           if (RecParentesisClosed(this.input_token_list[0]) == true)
+           if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -655,166 +668,166 @@ public class Syntatic
 
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("sayPosition"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("sayPosition"))
         {
             // Com isso já reconhecemos a palavra sayPosition
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
             // Agora estamos tentando reconhecer o espaço depois da palavra
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecEnemy(this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecEnemy(this.input_token_list[0]) == true ||
                  RecAlly(this.input_token_list[0]) == true ||
                  RecSelf(this.input_token_list[0]) == true ||
                  RecObjects(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
             // Tentando reconhecer as virgulas 
-            if (RecSeparator(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecSeparator(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ','", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
             // Fim do reconhecimento das virgulas
 
             // Tentando reconhecer o numero
-            if (RecNumber(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecNumber(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'num'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
             // Fim do reconhecimento do numero
 
             // Tentando reconhecer as virgulas 
-            if (RecSeparator(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecSeparator(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ','", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
             // Fim do reconhecimento das virgulas
 
             // Tentando reconhecer o numero
-            if (RecNumber(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecNumber(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'num'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
             // Fim do reconhecimento do numero
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -839,89 +852,89 @@ public class Syntatic
     {
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("help"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("help"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -943,7 +956,6 @@ public class Syntatic
     }
 
     // Funções auxiliares para ajudar a reconhecer a ordem, e o tipo dos tokenss
-    
     private bool RecAction(Token _token)
     {
         return _token.getType() == TokenTypes.action.ToString();
@@ -1013,13 +1025,13 @@ public class Syntatic
     {
         Token i = this.input_token_list[0];
 
-        if (RecAlly(_token_list[0]) == true)
+        if (this.input_token_list.Count > 0 && RecAlly(_token_list[0]) == true)
         {
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecSeparator(_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecSeparator(_token_list[0]) == true)
             {
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 return RecAllyGroup(_token_list);
             }
@@ -1040,16 +1052,15 @@ public class Syntatic
     {
         //quando da erro, limpa a linha e a lista aux até o momento
 
-        if (input_token_list.Count > 0)
+        if (this.input_token_list.Count > 0 && input_token_list.Count > 0)
         {
             while (this.input_token_list[0].getType() != "endLine") input_token_list.RemoveAt(0);
             
             input_token_list.RemoveAt(0);
         }
     }
-    private void ClearListAux(List<Token> _token_aux)
-    {
-        //quando da erro, limpa a linha e a lista aux até o momento
+    private void ClearRecognizedTokenList(List<Token> _token_aux)
+    { //Deve ser chamada ao encontrar um erro, limpa a lista de tokens reconhecidos até o momento
 
         if (_token_aux.Count > 0)
         {
@@ -1065,91 +1076,91 @@ public class Syntatic
     {
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("carryingBall"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("carryingBall"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly (this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
                 RecEnemy(this.input_token_list[0]) == true ||
                 RecSelf (this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -1174,91 +1185,91 @@ public class Syntatic
     {
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("marked"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("marked"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly (this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
                 RecEnemy(this.input_token_list[0]) == true ||
                 RecSelf (this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -1285,91 +1296,91 @@ public class Syntatic
 
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("position"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("position"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly (this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
                 RecEnemy(this.input_token_list[0]) == true ||
                 RecSelf (this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -1396,92 +1407,92 @@ public class Syntatic
 
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("neighbors"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("neighbors"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly (this.input_token_list[0]) == true ||
+            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
                 RecEnemy(this.input_token_list[0]) == true ||
                 RecSelf (this.input_token_list[0]) == true ||
                 RecObjects(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -1508,19 +1519,19 @@ public class Syntatic
     {
         // Tentando encontrar a condição correta entre os diversos tipos de condições
 
-        if (input_token_list[0].getValue().Equals("carryingBall"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("carryingBall"))
         {
             return recCarryingBall();
         }
-        else if (input_token_list[0].getValue().Equals("marked"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("marked"))
         {
             return recMarked();
         }
-        else if (input_token_list[0].getValue().Equals("position"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("position"))
         {
             return recPosition();
         }
-        else if (input_token_list[0].getValue().Equals("neighbors"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("neighbors"))
         {
             return recNeighbors();
         }
@@ -1538,48 +1549,48 @@ public class Syntatic
 
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("askAction"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("askAction"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
             // Reconhecendo o primeiro delimitador
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
             
             // Tentando reconhecer uma ação
 
-            if (RecAction(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAction(this.input_token_list[0]) == true)
             {
-                if (recActionType() == false)
+                if (this.input_token_list.Count > 0 && recActionType() == false)
                 {
                     erro = true;
-                    this.input_token_list.RemoveAt(0);
+                    clearCurrentPosition();
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'action'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
@@ -1587,68 +1598,68 @@ public class Syntatic
 
             //Tentando reconhecer open_parentesis
             
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -1673,49 +1684,49 @@ public class Syntatic
     {
         bool erro = false;
 
-        if (input_token_list[0].getValue().Equals("askInfo"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("askInfo"))
         {
             this.recognized_token_list.Add(input_token_list[0]);
-            this.input_token_list.RemoveAt(0);
+            clearCurrentPosition();
 
             // Reconhecendo o primeiro delimitador
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
 
                 erro = true;
             }
 
             // Tentando reconhecer uma condição
 
-            if (RecCondition(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecCondition(this.input_token_list[0]) == true)
             {
-                if (recConditionType() == false)
+                if (this.input_token_list.Count > 0 && recConditionType() == false)
                 {
                     erro = true;
-                    this.input_token_list.RemoveAt(0);
+                    clearCurrentPosition();
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'condition'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
@@ -1723,68 +1734,68 @@ public class Syntatic
 
             //Tentando reconhecer open_parentesis
 
-            if (RecParentesisOpen(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisOpen(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (RecParentesisClosed(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecParentesisClosed(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
                 erro = true;
             }
 
-            if (RecDelimiter(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecDelimiter(this.input_token_list[0]) == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                this.input_token_list.RemoveAt(0);
+                clearCurrentPosition();
             }
             else
             {
-                if (erro == false) ClearListAux(this.recognized_token_list);
+                if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 /*
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'blank'", TokenTypes.error));
                 
-                this.input_token_list.RemoveAt(0);*/
+                clearCurrentPosition();*/
                 erro = true;
             }
 
@@ -1813,11 +1824,11 @@ public class Syntatic
     {
         // Tentando encontrar a pergunta correta entre os diversos tipos de perguntas
 
-        if (input_token_list[0].getValue().Equals("askAction"))
+        if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("askAction"))
         {
             return recAskAction();
         }
-        else if (input_token_list[0].getValue().Equals("askInfo"))
+        else if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("askInfo"))
         {
             return recAskInfo();
         }
@@ -1825,5 +1836,21 @@ public class Syntatic
         {
             return false;
         }
+    }
+
+    private void clearCurrentPosition(){
+        if (this.input_token_list.Count > 0) {
+            this.tracking_token.setPosition(this.input_token_list[0].getPositionInt());
+            this.input_token_list.RemoveAt(0);
+        }
+    }
+    private Tuple<int, int> moveAndGetTrackingTokenPosition()
+    {
+        int line = this.tracking_token.getPositionInt().Item1;
+        int column = this.tracking_token.getPositionInt().Item2;
+        line += 1;
+        column += 1;
+        this.tracking_token.setPosition(new Tuple<int, int>(line, column));
+        return this.tracking_token.getPositionInt();
     }
 }

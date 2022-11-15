@@ -1,1 +1,2 @@
-sayOk(allyNn7) 
+sayOk (allyNn7) .
+sayNo (allyNn7) .

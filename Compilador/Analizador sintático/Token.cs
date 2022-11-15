@@ -37,6 +37,12 @@ public class Token
 		this.scope = _scope;
 	}
 
+	public void setPosition(Tuple<int, int> _position)
+    {
+		this.position = _position;
+
+	}
+
 	public string getPosition()
 	{
 		return this.position.ToString();
@@ -56,7 +62,7 @@ public class Token
 
 	private string formatString()
 	{
-		return "<posição:" + this.position + ", lexema: '" + this.value + "', tipo do lexema: " + this.type + ", valor do token: "+ this.value + ">";
+		return $"<posição: {this.position}, lexema: '{this.value}', tipo do lexema: { this.type} >";
 	}
 
 	public override string ToString()
