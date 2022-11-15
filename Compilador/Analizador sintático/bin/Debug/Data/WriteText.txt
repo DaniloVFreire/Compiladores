@@ -1,1 +1,1 @@
-askInfo position self) (allyNh1) .
+askAction (allyNa7) (allyNb9)

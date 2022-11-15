@@ -564,13 +564,14 @@ public class Syntatic
 
     // Função auxiliar que limpa uma linha de código com erro
     private void ClearLineList()
-    {
-        //quando da erro, limpa a linha e a lista aux até o momento
+    { //quando da erro, limpa a linha e a lista aux até o momento
 
         if (this.input_token_list.Count > 0 && input_token_list.Count > 0)
         {
-            while (this.input_token_list[0].getType() != "endLine") input_token_list.RemoveAt(0);
+            while (this.input_token_list.Count > 0 && this.input_token_list[0].getType() != "endLine")
+             input_token_list.RemoveAt(0);
             
+            if(this.input_token_list.Count > 0)
             input_token_list.RemoveAt(0);
         }
     }
