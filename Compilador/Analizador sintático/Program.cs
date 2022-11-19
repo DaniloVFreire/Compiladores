@@ -12,6 +12,10 @@ namespace CompilerS
     {
         static void Main(string[] args)
         {
+            //Gerando os casos testes básicos
+            //TestGenerator example = new TestGenerator();
+            //example.FS();
+            //Console.ReadLine();
             Utils utils = new Utils(true);
             Compiler compiler_instance = new Compiler(utils);
             compiler_instance.RunCompilation();
