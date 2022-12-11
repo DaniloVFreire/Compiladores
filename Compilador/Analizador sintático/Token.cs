@@ -1,18 +1,18 @@
 using System;
 public enum TokenTypes
 {
-	action,
-	ally,
-	ask,
-	condition,
-	enemy,
-	objects,
+	action, //ID
+	ally, // ID
+	ask, //ID
+	condition, //ID
+	enemy, // ID
+	objects, // ID
 	separator,
 	delimiter,
-	error,
+	error, // ID
 	open_parentesis,
 	close_parentesis,
-	self,
+	self, // ID
 	number,
 	endLine,
 }

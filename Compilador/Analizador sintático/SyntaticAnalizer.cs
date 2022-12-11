@@ -46,7 +46,6 @@ public class Syntatic
                 utils.Verbose("FS() recActionType() == true");
                 if (this.input_token_list.Count > 0 && recActionType() == true)
                 {
-                    
                     erro = RecEndLine(this.input_token_list[0],erro);
                 }
                 else
@@ -421,7 +420,7 @@ public class Syntatic
             // Tentando reconhecer as virgulas 
             if (this.input_token_list.Count > 0 && RecSeparator(this.input_token_list[0]) == true)
             {
-                if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
+                //if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
             }
             else
@@ -444,7 +443,7 @@ public class Syntatic
             // Tentando reconhecer as virgulas 
             if (this.input_token_list.Count > 0 && RecSeparator(this.input_token_list[0]) == true)
             {
-                if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
+                //if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
             }
             else
@@ -1096,7 +1095,7 @@ public class Syntatic
         if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.delimiter.ToString())
         {
             utils.Verbose("RecDelimiter() == true");
-            this.recognized_token_list.Add(input_token_list[0]);
+            //this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
         }
         else
@@ -1124,7 +1123,7 @@ public class Syntatic
             if (error == false)
             {
                 utils.Verbose("recognized token: "+ this.input_token_list[0].ToString());
-                this.new_token_list.Add(this.input_token_list[0]);
+                //this.new_token_list.Add(this.input_token_list[0]);
             }
             clearCurrentPosition();
         }
@@ -1148,7 +1147,7 @@ public class Syntatic
         if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.close_parentesis.ToString())
         {
             utils.Verbose("RecParentesisClosed() == true");
-            if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
+            //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
         }
         else
@@ -1167,7 +1166,7 @@ public class Syntatic
         if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.open_parentesis.ToString())
         {
             utils.Verbose("RecParentesisOpen() == true");
-            if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
+            //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
         }
         else
@@ -1186,7 +1185,7 @@ public class Syntatic
     {
         if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.number.ToString())
             {
-                if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
+                //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
             }
             else
