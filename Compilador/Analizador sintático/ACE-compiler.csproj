@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Semantic.cs" />
     <Compile Include="TestGenerator.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Compiler.cs" />
