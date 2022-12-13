@@ -16,13 +16,11 @@ public class Semantic
 
     public string Execution(List<Token> token_list_input)
     {
-        foreach (string allyatual in allyTeam)
-        {
             foreach (Token token in token_list_input)
             {
                 if (token.getType().Equals("ally"))
                 {
-                    string saida = CheckAlly(token, allyatual);
+                    string saida = CheckAlly(token, "allyNa0");
 
                     if (saida != null) return "ERROR: "+saida;
                 }
@@ -36,7 +34,6 @@ public class Semantic
                     }
                 }
             }
-        }
 
         return "Semantico executado com sucesso";
     }
@@ -62,12 +59,9 @@ public class Semantic
         string testNull = CheckNullPlayer(token);
         if (testNull != null) return "Jogador inexistente: " + testNull;
 
-        /*string testSelf = CheckSelf(token, allyatual);
+        string testSelf = CheckSelf(token, allyatual);
 
-        if (testSelf != null) return "Jogador "+self+"falando consigo";*/
-
-        /*string testEnemy = CheckEnemy(token);
-        if (testEnemy != null) return "Jogador " + allyatual + "falando com inimigo";*/
+        if (testSelf != null) return "Jogador "+ allyatual + " falando consigo";
 
         return null;
     }
@@ -84,23 +78,13 @@ public class Semantic
 
         return tokentest.getValue();
     }
-    
-    /*private string CheckEnemy(Token tokentest)
-    {
-        foreach (string token in enemyTeam)
-        {
-            if (tokentest.getValue().Equals(token)) return "erro";
-        }
 
-        return null;
-    }*/
-
-    /*private string CheckSelf (Token token, string self)
+    private string CheckSelf (Token token, string self)
     {
         if (token.getValue().Equals(self)) return self;
 
         return null;
-    }*/
+    }
     private List<string> IniciarAllyTeam()
     {
         List<string> list = new List<string>();

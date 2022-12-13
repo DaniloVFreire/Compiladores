@@ -1,1 +1,1 @@
-askAction sayOk (allyNb1) (allyNc2) .sayOk (allyNa2) .
+askAction sayOk (allyNc2) (allyNc2) .sayOk (allyNa8) .
