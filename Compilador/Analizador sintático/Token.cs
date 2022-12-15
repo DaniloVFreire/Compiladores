@@ -62,7 +62,7 @@ public class Token
 
 	private string formatString()
 	{
-		return $"<posição: {this.position}, lexema: '{this.value}', tipo do lexema: { this.type} >";
+		return $"<posição: {this.position}, lexema: \"{this.value}\", tipo do lexema: { this.type} >";
 	}
 
 	public override string ToString()

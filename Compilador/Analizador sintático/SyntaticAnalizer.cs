@@ -204,7 +204,7 @@ public class Syntatic
 
 
             erro = RecParentesisClosed(erro);
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
             
@@ -236,7 +236,7 @@ public class Syntatic
         {
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
             erro = RecDelimiter(erro);
 
             erro = RecParentesisOpen(erro);
@@ -1060,7 +1060,7 @@ public class Syntatic
             }
             if(find == false){
                 utils.Verbose("Removendo unexpected token " + input_token_list[0].ToString());
-                this.errors_list.Add(new Token(this.input_token_list[0].getPositionInt(), "Token não esperado: " + input_token_list[0].getValue(), TokenTypes.error));
+                this.errors_list.Add(new Token(this.input_token_list[0].getPositionInt(), $"Token não esperado: '{input_token_list[0].getValue()}'", TokenTypes.error));
             }
             clearCurrentPosition();
         }

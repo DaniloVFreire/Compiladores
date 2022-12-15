@@ -46,16 +46,16 @@ public class Lexical_analizer
             if (/*input_line[i] != ' ' && */String.IsNullOrEmpty(word))
             {//inicializa a cadeia do token em word
                 this.wordStartPosition = i;
-                utils.Verbose("Inicializando cadeia com caractere: " + Char.ToString(input_line[i]));
+                utils.Verbose($"Inicializando cadeia com caractere: '{Char.ToString(input_line[i])}'");
 
 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
 
                 if (input_line[i] == '.' || input_line[i] == ',' ||
-                input_line[i] == '(' || input_line[i] == ')')
+                input_line[i] == '(' || input_line[i] == ')' || input_line[i] == ' ')
                 {//se o símbolo incial da cadeia for um "fechador"
-                    utils.Verbose("cadeia de tamanho 1 finalizada com: " + input_line[i]);
+                    utils.Verbose($"cadeia de tamanho 1 finalizada com: '{input_line[i]}'");
                     generateAndAppendToken(line, this.wordStartPosition, word, true);
                 }
             }
@@ -63,15 +63,15 @@ public class Lexical_analizer
                 !(input_line[i] == ' ' || input_line[i] == '.' || input_line[i] == ',' ||
                 input_line[i] == '(' || input_line[i] == ')'))
             {//continuando a cadeia do token em word
-                utils.Verbose("reconhecendo caracteres do token: " + Char.ToString(input_line[i]));
+                utils.Verbose($"reconhecendo caracteres do token: '{Char.ToString(input_line[i])}' ");
 
                 this.word = word.Insert(stringInsertionPosition, Char.ToString(input_line[i]));
                 this.stringInsertionPosition++;
             }
             else if (!String.IsNullOrEmpty(word))
             {//finaliza a cadeia do token
-                utils.Verbose("token encontrado: " + word);
-                utils.Verbose("cadeia finalizada com: " + input_line[i]);
+                utils.Verbose($"token encontrado: '{word}'");
+                utils.Verbose($"cadeia finalizada com: {input_line[i]}");
 
                 generateAndAppendToken(line, this.wordStartPosition, word, false);
                 generateAndAppendToken(line, this.wordStartPosition + word.Length, Char.ToString(input_line[i]), true);
@@ -84,7 +84,7 @@ public class Lexical_analizer
         }
         if (!String.IsNullOrEmpty(word))
         {//finaliza a cadeia do token
-            utils.Verbose("token encontrado fora do loop: " + word);
+            utils.Verbose($"token encontrado fora do loop: '{word}'");
 
             generateAndAppendToken(line, this.wordStartPosition, word, true);
         }
