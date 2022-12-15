@@ -1,1 +1,1 @@
-askAction sayOk (allyNc2) (allyNc2) .sayOk (allyNa8) .
+moveTowards (

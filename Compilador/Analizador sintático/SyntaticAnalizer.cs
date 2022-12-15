@@ -41,27 +41,27 @@ public class Syntatic
         {
             bool erro = false;
 
-            if (this.input_token_list.Count > 0 && RecAction(this.input_token_list[0]) == true)// Analisando se existe uma ação na lista de tokens
+            if (RecAction() == true)// Analisando se existe uma ação na lista de tokens
             {
                 utils.Verbose("FS() recActionType() == true");
-                if (this.input_token_list.Count > 0 && recActionType() == true)
+                if (recActionType() == true)
                 {
-                    erro = RecEndLine(this.input_token_list[0],erro);
+                    erro = RecEndLine(erro);
                 }
                 else
                 {
                     utils.Verbose("FS() recActionType() == false");
-                    if (this.input_token_list.Count > 0 && input_token_list.Count != 0){
-                        clearCurrentPosition();
-                    }
+
+                    clearCurrentPosition();
+
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
             }
-            else if (this.input_token_list.Count > 0 && RecCondition(this.input_token_list[0]) == true)// Analisando se existe alguma condição na lista de tokens
+            else if (RecCondition() == true)// Analisando se existe alguma condição na lista de tokens
             {
-                if (this.input_token_list.Count > 0 && recConditionType() == true)
+                if (recConditionType() == true)
                 {
-                    erro = RecEndLine(this.input_token_list[0],erro);
+                    erro = RecEndLine(erro);
                 }
                 else
                 {
@@ -69,13 +69,13 @@ public class Syntatic
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
             }
-            else if (this.input_token_list.Count > 0 && RecAsk(this.input_token_list[0]) == true) // Analisando se existe alguma pergunta na lista de tokens
+            else if (RecAsk() == true) // Analisando se existe alguma pergunta na lista de tokens
             {
                 // Reconhecendo e removendo o ponto final da frase
-                if (this.input_token_list.Count > 0 && recAskType() == true)
+                if (recAskType() == true)
                 {
                     utils.Verbose("FS() recAskType() == true");
-                    erro = RecEndLine(this.input_token_list[0],erro);
+                    erro = RecEndLine(erro);
                     
                 }
                 else
@@ -171,46 +171,42 @@ public class Syntatic
 
         if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("moveTowards"))
         {
+            utils.Verbose("recMoveTowards() == true");
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis });
 
-            if (this.input_token_list.Count > 0 && RecEnemy(this.input_token_list[0]) == true ||
-                 RecAlly(this.input_token_list[0]) == true ||
-                 RecSelf(this.input_token_list[0]) == true ||
-                 RecObjects(this.input_token_list[0]) == true)
+            erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.enemy, TokenTypes.self, TokenTypes.objects, TokenTypes.close_parentesis });
+
+            if (this.input_token_list.Count > 0 && (RecEnemy() == true ||
+                 RecAlly() == true ||
+                 RecSelf() == true ||
+                 RecObjects() == true))
             {
+                utils.Verbose("recMoveTowards() == true (RecEnemy() == true || RecAlly() == true || RecSelf() == true || RecObjects() == true)");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
-                clearCurrentPosition();
+                    clearCurrentPosition();
+                
             }
             else
             {
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
                 
-                clearCurrentPosition();
                 erro = true;
             }
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis });
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+
+            erro = RecDelimiter(erro);
             
 
             if (erro == false)
@@ -241,18 +237,13 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true ||
+            erro = RecParentesisOpen(erro);
+
+            if (this.input_token_list.Count > 0 && RecAlly() == true ||
                 input_token_list[0].getValue().Equals("enemyGoal") ||
-                RecSelf(this.input_token_list[0]) == true)
+                RecSelf() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -270,14 +261,9 @@ public class Syntatic
             }
 
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -306,15 +292,9 @@ public class Syntatic
         {
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
+            erro = RecDelimiter(erro);
+            erro = RecParentesisOpen(erro);
+            if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 utils.Verbose("recSayOK() RecAlly() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
@@ -326,21 +306,17 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(tracking_token.getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'ID aliado'", TokenTypes.error));
                 
                 if(this.input_token_list.Count > 0 && this.input_token_list[0].getValue().Equals(")") == false) clearCurrentPosition();
 
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -370,16 +346,11 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
+            erro = RecParentesisOpen(erro);
+
+            if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -395,14 +366,10 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -434,19 +401,13 @@ public class Syntatic
             clearCurrentPosition();
 
             // Agora estamos tentando reconhecer o espaço depois da palavra
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecEnemy(this.input_token_list[0]) == true ||
-                 RecAlly(this.input_token_list[0]) == true ||
-                 RecSelf(this.input_token_list[0]) == true ||
-                 RecObjects(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecEnemy() == true ||
+                 RecAlly() == true ||
+                 RecSelf() == true ||
+                 RecObjects() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -456,14 +417,14 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
                 
                 clearCurrentPosition();
                 erro = true;
             }
 
             // Tentando reconhecer as virgulas 
-            if (this.input_token_list.Count > 0 && RecSeparator(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecSeparator() == true)
             {
                 //if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -481,14 +442,11 @@ public class Syntatic
             // Fim do reconhecimento das virgulas
 
             // Tentando reconhecer o numero
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecNumber(this.input_token_list[0], erro);
-            }
+            erro = RecNumber(erro);
             // Fim do reconhecimento do numero
 
             // Tentando reconhecer as virgulas 
-            if (this.input_token_list.Count > 0 && RecSeparator(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecSeparator() == true)
             {
                 //if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -506,20 +464,12 @@ public class Syntatic
             // Fim do reconhecimento das virgulas
 
             // Tentando reconhecer o numero
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecNumber(this.input_token_list[0], erro);
-            }
+            erro = RecNumber(erro);
             // Fim do reconhecimento do numero
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -547,16 +497,10 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -573,14 +517,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -603,11 +542,11 @@ public class Syntatic
     {
         Token i = this.input_token_list[0];
 
-        if (this.input_token_list.Count > 0 && RecAlly(_token_list[0]) == true)
+        if (this.input_token_list.Count > 0 && RecAlly() == true)
         {
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0 && RecSeparator(_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecSeparator() == true)
             {
                 clearCurrentPosition();
 
@@ -660,18 +599,13 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
-                RecEnemy(this.input_token_list[0]) == true ||
-                RecSelf (this.input_token_list[0]) == true)
+            erro = RecParentesisOpen( erro);
+
+            if (this.input_token_list.Count > 0 && RecAlly() == true ||
+                RecEnemy() == true ||
+                RecSelf() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -688,14 +622,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -723,18 +652,12 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
-                RecEnemy(this.input_token_list[0]) == true ||
-                RecSelf (this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly() == true ||
+                RecEnemy() == true ||
+                RecSelf() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -751,14 +674,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -790,18 +708,12 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
-                RecEnemy(this.input_token_list[0]) == true ||
-                RecSelf (this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly() == true ||
+                RecEnemy() == true ||
+                RecSelf() == true)
             {
                 utils.Verbose("recPosition() RecAlly()||RecEnemy()||RecSelf() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
@@ -820,14 +732,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -859,19 +766,13 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly (this.input_token_list[0]) == true ||
-                RecEnemy(this.input_token_list[0]) == true ||
-                RecSelf (this.input_token_list[0]) == true ||
-                RecObjects(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly() == true ||
+                RecEnemy() == true ||
+                RecSelf() == true ||
+                RecObjects() == true)
             {
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -888,14 +789,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -962,13 +858,10 @@ public class Syntatic
             clearCurrentPosition();
 
             // Reconhecendo o primeiro delimitador
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
             // Tentando reconhecer uma ação
 
-            if (this.input_token_list.Count > 0 && RecAction(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAction() == true)
             {
                 utils.Verbose("recAskAction() RecAction() == true");
                 if (this.input_token_list.Count > 0 && recActionType() == false)
@@ -997,12 +890,9 @@ public class Syntatic
             //OBS: o segundo delimitador já é reconhecido na função que reconhece a ação
 
             //Tentando reconhecer open_parentesis
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 utils.Verbose("recAskAction() RecAlly() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
@@ -1023,12 +913,9 @@ public class Syntatic
 
             if(this.input_token_list.Count > 0)
             {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
+                erro = RecParentesisClosed(erro);
             }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
 
             if (erro == false)
             {
@@ -1058,13 +945,10 @@ public class Syntatic
             clearCurrentPosition();
 
             // Reconhecendo o primeiro delimitador
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecDelimiter(erro);
             // Tentando reconhecer uma condição
 
-            if (this.input_token_list.Count > 0 && RecCondition(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecCondition() == true)
             {
                 utils.Verbose("recAskAction() RecCondition() == true");
                 if (this.input_token_list.Count > 0 && recConditionType() == false)
@@ -1090,12 +974,9 @@ public class Syntatic
             //OBS: o segundo delimitador já é reconhecido na função que reconhece a condição
 
             //Tentando reconhecer open_parentesis
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisOpen(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisOpen(erro);
 
-            if (this.input_token_list.Count > 0 && RecAlly(this.input_token_list[0]) == true)
+            if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 utils.Verbose("recAskAction() RecAlly() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
@@ -1114,14 +995,9 @@ public class Syntatic
                 erro = true;
             }
 
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecParentesisClosed(this.input_token_list[0], erro);
-            }
-            if (this.input_token_list.Count > 0)
-            {
-                erro = RecDelimiter(this.input_token_list[0], erro);
-            }
+            erro = RecParentesisClosed(erro);
+
+            erro = RecDelimiter(erro);
             // Removendo os tokens da lista aux, e adicionando na stack
 
             if (erro == false)
@@ -1165,7 +1041,30 @@ public class Syntatic
             return false;
         }
     }
-
+    private void clearCurrentAndUnexpected(List<TokenTypes> tokenTypesList)
+    {
+        clearCurrentPosition();
+        clearUnexpected(tokenTypesList);
+    }
+    private void clearUnexpected(List<TokenTypes> tokenTypesList)
+    {
+        bool find = false;
+        while (this.input_token_list.Count > 0)
+        {
+            for(int i = 0 ; i < tokenTypesList.Count ; ++i){
+                utils.Verbose(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()).ToString());
+                if(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString())){
+                    find = true;
+                    return;
+                }
+            }
+            if(find == false){
+                utils.Verbose("Removendo unexpected token " + input_token_list[0].ToString());
+                this.errors_list.Add(new Token(this.input_token_list[0].getPositionInt(), "Token não esperado: " + input_token_list[0].getValue(), TokenTypes.error));
+            }
+            clearCurrentPosition();
+        }
+    }
     private void clearCurrentPosition(){
         if (this.input_token_list.Count > 0) {
             utils.Verbose("Removendo token " + input_token_list[0].ToString());
@@ -1177,45 +1076,79 @@ public class Syntatic
     {
         int line = this.tracking_token.getPositionInt().Item1;
         int column = this.tracking_token.getPositionInt().Item2;
-        line += 1;
-        column += 1;
-        this.tracking_token.setPosition(new Tuple<int, int>(line, column));
+        this.tracking_token.setPosition(new Tuple<int, int>(line+1, column+1));
         return this.tracking_token.getPositionInt();
     }
     // Funções auxiliares para ajudar a reconhecer a ordem, e o tipo dos tokenss
-    private bool RecAction(Token _token)
+    private bool RecAction()
     {
-        return _token.getType() == TokenTypes.action.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.action.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando ação", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecAsk(Token _token)
+    private bool RecAsk()
     {
-        return _token.getType() == TokenTypes.ask.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.ask.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando pergunta", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecCondition(Token _token)
+    private bool RecCondition()
     {
-        return _token.getType() == TokenTypes.condition.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.condition.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando condição", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecEnemy(Token _token)
+    private bool RecEnemy()
     {
-        return _token.getType() == TokenTypes.enemy.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.enemy.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando Enemy", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecAlly(Token _token)
+    private bool RecAlly()
     {
-        return _token.getType() == TokenTypes.ally.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.ally.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando Ally", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecSeparator(Token _token)
+    private bool RecSeparator()
     {
-        return _token.getType() == TokenTypes.separator.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.separator.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando separador", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecDelimiter(Token _token, bool error)
+    private bool RecDelimiter(bool error)
     {
-        if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.delimiter.ToString())
+        if (this.input_token_list.Count > 0 && input_token_list[0].getType() == TokenTypes.delimiter.ToString())
         {
             utils.Verbose("RecDelimiter() == true");
             //this.recognized_token_list.Add(input_token_list[0]);
@@ -1226,21 +1159,27 @@ public class Syntatic
             utils.Verbose("RecDelimiter() == false");
             if (error == false) ClearRecognizedTokenList(this.recognized_token_list);
 
-            this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Token esperado ' '", TokenTypes.error));
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Token esperado ' '", TokenTypes.error));
 
             error = true;
         }
         return error;
     }
     
-    private bool RecSelf(Token _token)
+    private bool RecSelf()
     {
-        return _token.getType() == TokenTypes.self.ToString();
+        if(input_token_list.Count > 0){
+            return input_token_list[0].getType() == TokenTypes.self.ToString();
+        }
+        else{
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando self", TokenTypes.error));
+            return false;
+        }
     }
 
-    private bool RecEndLine(Token _token, bool error)
+    private bool RecEndLine(bool error)
     {
-        if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.endLine.ToString())
+        if (this.input_token_list.Count > 0 && input_token_list[0].getType() == TokenTypes.endLine.ToString())
         {
             utils.Verbose("RecEndLine() == true");
             if (error == false)
@@ -1265,9 +1204,9 @@ public class Syntatic
         return error;
     }
 
-    private bool RecParentesisClosed(Token _token, bool error)
+    private bool RecParentesisClosed(bool error)
     {
-        if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.close_parentesis.ToString())
+        if (this.input_token_list.Count > 0 && input_token_list[0].getType() == TokenTypes.close_parentesis.ToString())
         {
             utils.Verbose("RecParentesisClosed() == true");
             //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
@@ -1277,16 +1216,16 @@ public class Syntatic
         {
             utils.Verbose("RecParentesisClosed() == false");
             if (error == false) ClearRecognizedTokenList(this.recognized_token_list);
-            this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ')'", TokenTypes.error));
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando ')'", TokenTypes.error));
             
             error = true;
         }
         return error;
     }
 
-    private bool RecParentesisOpen(Token _token, bool error)
+    private bool RecParentesisOpen(bool error)
     {
-        if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.open_parentesis.ToString())
+        if (this.input_token_list.Count > 0 && input_token_list[0].getType() == TokenTypes.open_parentesis.ToString())
         {
             utils.Verbose("RecParentesisOpen() == true");
             //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
@@ -1297,16 +1236,16 @@ public class Syntatic
             utils.Verbose("RecParentesisOpen() == false");
             if (error == false) ClearRecognizedTokenList(this.recognized_token_list);
             
-            this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando '('", TokenTypes.error));
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando '('", TokenTypes.error));
             
             error = true;
         }
         return error;
     }
 
-    private bool RecNumber(Token _token, bool error)
+    private bool RecNumber(bool error)
     {
-        if (this.input_token_list.Count > 0 && _token.getType() == TokenTypes.number.ToString())
+        if (this.input_token_list.Count > 0 && input_token_list[0].getType() == TokenTypes.number.ToString())
             {
                 //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
@@ -1322,8 +1261,8 @@ public class Syntatic
         return error;
     }
 
-    private bool RecObjects(Token _token)
+    private bool RecObjects()
     {
-        return _token.getType() == TokenTypes.objects.ToString();
+        return input_token_list[0].getType() == TokenTypes.objects.ToString();
     }
 }

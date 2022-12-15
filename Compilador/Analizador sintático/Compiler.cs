@@ -5,7 +5,7 @@ using System.IO;
 public class Compiler
 {
     private List<Token> token_list;
-    private List<Token> semantic_input_token_list, semantic_output_token_list;
+    private List<Token> semantic_input_token_list;
     private Utils utils;
     public Compiler(Utils _utils)
     {
