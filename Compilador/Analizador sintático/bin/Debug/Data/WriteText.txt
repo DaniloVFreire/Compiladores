@@ -1,1 +1,1 @@
-moveTowards (  allyNa0 ) .
+sendBall (enemyGoal) .

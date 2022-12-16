@@ -207,7 +207,7 @@ public class Syntatic
             clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
-            
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -237,9 +237,12 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
             clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
+
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis });
 
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.ally, TokenTypes.self }, new List<string> { "enemyGoal" });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true ||
                 input_token_list[0].getValue().Equals("enemyGoal") ||
@@ -1043,8 +1046,43 @@ public class Syntatic
     }
     private void clearCurrentAndUnexpected(List<TokenTypes> tokenTypesList)
     {
+        tokenTypesList.Add(TokenTypes.endLine);
+        tokenTypesList.Add(TokenTypes.action);
+        tokenTypesList.Add(TokenTypes.condition);
+        tokenTypesList.Add(TokenTypes.ask);
         clearCurrentPosition();
         clearUnexpected(tokenTypesList);
+    }
+    private void clearUnexpected(List<TokenTypes> tokenTypesList, List<string> tokenLexemeList)
+    {
+        bool find = false;
+        while (this.input_token_list.Count > 0)
+        {
+            for (int i = 0; i < tokenTypesList.Count; ++i)
+            {
+                utils.Verbose(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()).ToString());
+                if (this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()))
+                {
+                    find = true;
+                    return;
+                }
+            }
+            for (int i = 0; i < tokenLexemeList.Count; ++i)
+            {
+                utils.Verbose(this.input_token_list[0].getValue().Equals(tokenLexemeList[i]).ToString());
+                if (this.input_token_list[0].getValue().Equals(tokenLexemeList[i]))
+                {
+                    find = true;
+                    return;
+                }
+            }
+            if (find == false)
+            {
+                utils.Verbose("Removendo unexpected token " + input_token_list[0].ToString());
+                this.errors_list.Add(new Token(this.input_token_list[0].getPositionInt(), $"Token não esperado: '{input_token_list[0].getValue()}'", TokenTypes.error));
+            }
+            clearCurrentPosition();
+        }
     }
     private void clearUnexpected(List<TokenTypes> tokenTypesList)
     {
@@ -1076,7 +1114,7 @@ public class Syntatic
     {
         int line = this.tracking_token.getPositionInt().Item1;
         int column = this.tracking_token.getPositionInt().Item2;
-        this.tracking_token.setPosition(new Tuple<int, int>(line+1, column+1));
+        this.tracking_token.setPosition(new Tuple<int, int>(line, column+1));
         return this.tracking_token.getPositionInt();
     }
     // Funções auxiliares para ajudar a reconhecer a ordem, e o tipo dos tokenss
@@ -1192,14 +1230,11 @@ public class Syntatic
         else
         {
             utils.Verbose("RecEndLine() == false");
-            if (error == false)
-            {
-                error = true;
-                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), $"Esperando '.'", TokenTypes.error));
-                Console.WriteLine("Esperando um '.' ao final do comando 'action'");
-                //TODO: colocar linha ignorada
-                Console.WriteLine($"Linha ignorada");
-            }
+            error = true;
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), $"Esperando '.'", TokenTypes.error));
+            Console.WriteLine("Esperando um '.' ao final do comando 'action'");
+            //TODO: colocar linha ignorada
+            Console.WriteLine($"Linha ignorada");
         }
         return error;
     }
