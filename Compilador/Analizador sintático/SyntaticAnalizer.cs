@@ -538,7 +538,6 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                clearCurrentPosition();
 
                 erro = true;
             }
@@ -827,11 +826,11 @@ public class Syntatic
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
-                
-                clearCurrentPosition();
 
                 erro = true;
             }
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis });
+
 
             erro = RecParentesisClosed(erro);
             clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
