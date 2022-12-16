@@ -1,1 +1,1 @@
-sendBall (enemyGoal) .
+sayPosition (,,) .

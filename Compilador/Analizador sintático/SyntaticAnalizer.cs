@@ -236,10 +236,10 @@ public class Syntatic
         {
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
-            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter, TokenTypes.close_parentesis });
 
             erro = RecDelimiter(erro);
-            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis });
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
 
             erro = RecParentesisOpen(erro);
             clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.ally, TokenTypes.self }, new List<string> { "enemyGoal" });
@@ -262,11 +262,14 @@ public class Syntatic
 
                 erro = true;
             }
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis });
 
 
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter});
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine});
 
             if (erro == false)
             {
@@ -295,8 +298,13 @@ public class Syntatic
         {
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
+
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
+
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.close_parentesis });
+
             if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 utils.Verbose("recSayOK() RecAlly() == true");
@@ -315,11 +323,13 @@ public class Syntatic
 
                 erro = true;
             }
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis });
 
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -350,8 +360,10 @@ public class Syntatic
             clearCurrentPosition();
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
 
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
@@ -363,16 +375,19 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                clearCurrentPosition();
                 erro = true;
             }
 
 
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.delimiter });
+
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -405,7 +420,10 @@ public class Syntatic
 
             // Agora estamos tentando reconhecer o espaço depois da palavra
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis });
+
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.enemy, TokenTypes.ally, TokenTypes.self, TokenTypes.objects, TokenTypes.separator, TokenTypes.number, close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecEnemy() == true ||
                  RecAlly() == true ||
@@ -422,9 +440,9 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'ID agente' ou 'Goal'", TokenTypes.error));
                 
-                clearCurrentPosition();
                 erro = true;
             }
+            clearUnexpected(new List<TokenTypes> { TokenTypes.separator, TokenTypes.number, TokenTypes.close_parentesis });
 
             // Tentando reconhecer as virgulas 
             if (this.input_token_list.Count > 0 && RecSeparator() == true)
@@ -437,17 +455,17 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ','", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando ','", TokenTypes.error));
                 
-                clearCurrentPosition();
                 erro = true;
             }
             // Fim do reconhecimento das virgulas
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.separator, TokenTypes.number, TokenTypes.close_parentesis });
             // Tentando reconhecer o numero
             erro = RecNumber(erro);
+            utils.Verbose(this.input_token_list[0].ToString());
             // Fim do reconhecimento do numero
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.separator, TokenTypes.number, TokenTypes.close_parentesis });
             // Tentando reconhecer as virgulas 
             if (this.input_token_list.Count > 0 && RecSeparator() == true)
             {
@@ -459,21 +477,26 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando ','", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando ','", TokenTypes.error));
                 
-                clearCurrentPosition();
                 erro = true;
             }
+            
             // Fim do reconhecimento das virgulas
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.separator, TokenTypes.number, TokenTypes.close_parentesis, TokenTypes.delimiter });
             // Tentando reconhecer o numero
+            
             erro = RecNumber(erro);
             // Fim do reconhecimento do numero
+            
+            clearUnexpected(new List<TokenTypes> { TokenTypes.separator, TokenTypes.number, TokenTypes.close_parentesis, TokenTypes.delimiter });
+            
 
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine, TokenTypes.delimiter});
 
             erro = RecDelimiter(erro);
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine});
             if (erro == false)
             {
                 while (recognized_token_list.Count != 0)
@@ -603,8 +626,10 @@ public class Syntatic
             clearCurrentPosition();
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
 
-            erro = RecParentesisOpen( erro);
+            erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.enemy, TokenTypes.self, TokenTypes.close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true ||
                 RecEnemy() == true ||
@@ -620,14 +645,17 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
                 
-                clearCurrentPosition();
 
                 erro = true;
             }
 
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.delimiter });
+
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -656,7 +684,10 @@ public class Syntatic
             clearCurrentPosition();
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
+
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.enemy, TokenTypes.self, TokenTypes.close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true ||
                 RecEnemy() == true ||
@@ -672,14 +703,17 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
                 
-                clearCurrentPosition();
 
                 erro = true;
             }
 
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.delimiter });
+
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -712,7 +746,10 @@ public class Syntatic
             clearCurrentPosition();
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
+
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.enemy, TokenTypes.self, TokenTypes.close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true ||
                 RecEnemy() == true ||
@@ -729,15 +766,16 @@ public class Syntatic
 
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID agente'", TokenTypes.error));
-                
-                //clearCurrentPosition();
+               
 
                 erro = true;
             }
 
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -770,7 +808,10 @@ public class Syntatic
             clearCurrentPosition();
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
+
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.enemy, TokenTypes.self, TokenTypes.close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true ||
                 RecEnemy() == true ||
@@ -793,8 +834,10 @@ public class Syntatic
             }
 
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -860,10 +903,12 @@ public class Syntatic
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
 
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
+
             // Reconhecendo o primeiro delimitador
             erro = RecDelimiter(erro);
             // Tentando reconhecer uma ação
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.action, TokenTypes.close_parentesis });
             if (this.input_token_list.Count > 0 && RecAction() == true)
             {
                 utils.Verbose("recAskAction() RecAction() == true");
@@ -884,12 +929,11 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'action'", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'action'", TokenTypes.error));
                 
-                //clearCurrentPosition();
                 erro = true;
             }
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.action, TokenTypes.close_parentesis, TokenTypes.open_parentesis });
             //OBS: o segundo delimitador já é reconhecido na função que reconhece a ação
 
             //Tentando reconhecer open_parentesis
@@ -909,17 +953,17 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                clearCurrentPosition();
 
                 erro = true;
             }
-
-            if(this.input_token_list.Count > 0)
+            clearUnexpected(new List<TokenTypes> { TokenTypes.action, TokenTypes.close_parentesis, TokenTypes.open_parentesis });
+            if (this.input_token_list.Count > 0)
             {
                 erro = RecParentesisClosed(erro);
+                clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
             }
             erro = RecDelimiter(erro);
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
             if (erro == false)
             {
                 while (recognized_token_list.Count != 0)
@@ -946,10 +990,12 @@ public class Syntatic
             utils.Verbose("recAskAction() askInfo == true");
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             // Reconhecendo o primeiro delimitador
             erro = RecDelimiter(erro);
             // Tentando reconhecer uma condição
+            clearUnexpected(new List<TokenTypes> { TokenTypes.condition, TokenTypes.close_parentesis, TokenTypes.open_parentesis });
 
             if (this.input_token_list.Count > 0 && RecCondition() == true)
             {
@@ -968,17 +1014,16 @@ public class Syntatic
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'condition'", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'condition'", TokenTypes.error));
                 
-                //clearCurrentPosition();
                 erro = true;
             }
-
+            clearUnexpected(new List<TokenTypes> {TokenTypes.close_parentesis, TokenTypes.open_parentesis, TokenTypes.ally });
             //OBS: o segundo delimitador já é reconhecido na função que reconhece a condição
 
             //Tentando reconhecer open_parentesis
             erro = RecParentesisOpen(erro);
-
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.ally });
             if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
                 utils.Verbose("recAskAction() RecAlly() == true");
@@ -993,14 +1038,16 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
                 
-                //clearCurrentPosition();
 
                 erro = true;
             }
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis});
 
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter});
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
             // Removendo os tokens da lista aux, e adicionando na stack
 
             if (erro == false)
@@ -1060,7 +1107,6 @@ public class Syntatic
         {
             for (int i = 0; i < tokenTypesList.Count; ++i)
             {
-                utils.Verbose(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()).ToString());
                 if (this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()))
                 {
                     find = true;
@@ -1069,7 +1115,6 @@ public class Syntatic
             }
             for (int i = 0; i < tokenLexemeList.Count; ++i)
             {
-                utils.Verbose(this.input_token_list[0].getValue().Equals(tokenLexemeList[i]).ToString());
                 if (this.input_token_list[0].getValue().Equals(tokenLexemeList[i]))
                 {
                     find = true;
@@ -1090,7 +1135,6 @@ public class Syntatic
         while (this.input_token_list.Count > 0)
         {
             for(int i = 0 ; i < tokenTypesList.Count ; ++i){
-                utils.Verbose(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()).ToString());
                 if(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString())){
                     find = true;
                     return;
@@ -1175,10 +1219,13 @@ public class Syntatic
 
     private bool RecSeparator()
     {
+        
         if(input_token_list.Count > 0){
+            utils.Verbose("Rec separador true");
             return input_token_list[0].getType() == TokenTypes.separator.ToString();
         }
         else{
+            utils.Verbose("Rec separador false");
             this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando separador", TokenTypes.error));
             return false;
         }
@@ -1281,23 +1328,34 @@ public class Syntatic
     private bool RecNumber(bool error)
     {
         if (this.input_token_list.Count > 0 && input_token_list[0].getType() == TokenTypes.number.ToString())
-            {
-                //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
-                clearCurrentPosition();
-            }
-            else
-            {
-                if (error == false) ClearRecognizedTokenList(this.recognized_token_list);
-                
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'num'", TokenTypes.error));
-                
-                error = true;
-            }
+        {
+            utils.Verbose("RecNumber == true");
+            //if (error == false)  this.recognized_token_list.Add(input_token_list[0]);
+            clearCurrentPosition();
+        }
+        else
+        {
+            utils.Verbose("RecNumber == false");
+            if (error == false) ClearRecognizedTokenList(this.recognized_token_list);
+            
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'num'", TokenTypes.error));
+            
+            error = true;
+        }
         return error;
     }
 
     private bool RecObjects()
     {
-        return input_token_list[0].getType() == TokenTypes.objects.ToString();
+        if (input_token_list.Count > 0)
+        {
+            return input_token_list[0].getType() == TokenTypes.objects.ToString();
+        }
+        else
+        {
+            this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando object", TokenTypes.error));
+            return false;
+        }
+        
     }
 }
