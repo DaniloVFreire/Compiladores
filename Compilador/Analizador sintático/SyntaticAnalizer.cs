@@ -52,7 +52,7 @@ public class Syntatic
                 {
                     utils.Verbose("FS() recActionType() == false");
 
-                    clearCurrentPosition();
+                    clearUnexpected(new List<TokenTypes> { });
 
                     Console.WriteLine("Não foi possivel identificar uma ação na frase");
                 }
@@ -65,7 +65,7 @@ public class Syntatic
                 }
                 else
                 {
-                    clearCurrentPosition();
+                    clearUnexpected(new List<TokenTypes> { });
                     Console.WriteLine("Não foi possivel identificar uma condição na frase");
                 }
             }
@@ -80,7 +80,7 @@ public class Syntatic
                 }
                 else
                 {
-                    clearCurrentPosition();
+                    clearUnexpected(new List<TokenTypes> { });
                     Console.WriteLine("Não foi possivel identificar uma pergunta na frase");
                 }
 
@@ -90,7 +90,7 @@ public class Syntatic
                 
                 this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'action', 'condition' ou 'ask'", TokenTypes.error));
 
-                ClearLineList();
+                clearUnexpected(new List<TokenTypes> { });
 
                 Console.WriteLine("ERROR: PRECISA INICIAR UMA LINHA DE COMANDO COM UMA 'action', 'condition' ou 'ask'");
             }
@@ -520,31 +520,43 @@ public class Syntatic
 
         if (this.input_token_list.Count > 0 && input_token_list[0].getValue().Equals("help"))
         {
+            utils.Verbose("recHelp() == true");
             this.recognized_token_list.Add(input_token_list[0]);
             clearCurrentPosition();
-
+            utils.Verbose("recHelp() == true 0");
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter, TokenTypes.open_parentesis, TokenTypes.close_parentesis });
+            utils.Verbose("recHelp() == true 1");
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.open_parentesis, TokenTypes.close_parentesis });
+            utils.Verbose("recHelp() == true 2");
             erro = RecParentesisOpen(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.ally, TokenTypes.close_parentesis });
 
             if (this.input_token_list.Count > 0 && RecAlly() == true)
             {
+                utils.Verbose("recHelp() == true RecAlly() == true");
                 if (erro == false)  this.recognized_token_list.Add(input_token_list[0]);
                 clearCurrentPosition();
             }
             else
             {
+                utils.Verbose("recHelp() == true RecAlly() == false");
                 if (erro == false) ClearRecognizedTokenList(this.recognized_token_list);
 
                 
-                this.errors_list.Add(new Token(input_token_list[0].getPositionInt(), "Esperando 'ID aliado'", TokenTypes.error));
+                this.errors_list.Add(new Token(moveAndGetTrackingTokenPosition(), "Esperando 'ID aliado'", TokenTypes.error));
                 
 
                 erro = true;
             }
 
+            clearUnexpected(new List<TokenTypes> { TokenTypes.close_parentesis, TokenTypes.delimiter });
+
             erro = RecParentesisClosed(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.delimiter });
 
             erro = RecDelimiter(erro);
+            clearUnexpected(new List<TokenTypes> { TokenTypes.endLine });
 
             if (erro == false)
             {
@@ -1090,28 +1102,13 @@ public class Syntatic
             return false;
         }
     }
-    private void clearCurrentAndUnexpected(List<TokenTypes> tokenTypesList)
-    {
-        tokenTypesList.Add(TokenTypes.endLine);
-        tokenTypesList.Add(TokenTypes.action);
-        tokenTypesList.Add(TokenTypes.condition);
-        tokenTypesList.Add(TokenTypes.ask);
-        clearCurrentPosition();
-        clearUnexpected(tokenTypesList);
-    }
     private void clearUnexpected(List<TokenTypes> tokenTypesList, List<string> tokenLexemeList)
     {
+        tokenTypesList = addTokensToNotRemove(tokenTypesList);
         bool find = false;
         while (this.input_token_list.Count > 0)
         {
-            for (int i = 0; i < tokenTypesList.Count; ++i)
-            {
-                if (this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()))
-                {
-                    find = true;
-                    return;
-                }
-            }
+            find = findFromTokentype(tokenTypesList);
             for (int i = 0; i < tokenLexemeList.Count; ++i)
             {
                 if (this.input_token_list[0].getValue().Equals(tokenLexemeList[i]))
@@ -1124,27 +1121,50 @@ public class Syntatic
             {
                 utils.Verbose("Removendo unexpected token " + input_token_list[0].ToString());
                 this.errors_list.Add(new Token(this.input_token_list[0].getPositionInt(), $"Token não esperado: '{input_token_list[0].getValue()}'", TokenTypes.error));
+                clearCurrentPosition();
             }
-            clearCurrentPosition();
+            else
+            {
+                return;
+            }
         }
     }
     private void clearUnexpected(List<TokenTypes> tokenTypesList)
     {
+        tokenTypesList = addTokensToNotRemove(tokenTypesList);
         bool find = false;
         while (this.input_token_list.Count > 0)
         {
-            for(int i = 0 ; i < tokenTypesList.Count ; ++i){
-                if(this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString())){
-                    find = true;
-                    return;
-                }
-            }
-            if(find == false){
+            find = findFromTokentype(tokenTypesList);
+            if (find == false){
                 utils.Verbose("Removendo unexpected token " + input_token_list[0].ToString());
                 this.errors_list.Add(new Token(this.input_token_list[0].getPositionInt(), $"Token não esperado: '{input_token_list[0].getValue()}'", TokenTypes.error));
+                clearCurrentPosition();
             }
-            clearCurrentPosition();
+            else
+            {
+                return;
+            }
         }
+    }
+    private List<TokenTypes> addTokensToNotRemove(List<TokenTypes> tokenTypesList)
+    {
+        tokenTypesList.Add(TokenTypes.endLine);
+        tokenTypesList.Add(TokenTypes.action);
+        tokenTypesList.Add(TokenTypes.condition);
+        tokenTypesList.Add(TokenTypes.ask);
+        return tokenTypesList;
+    }
+    private bool findFromTokentype(List<TokenTypes> tokenTypesList)
+    {
+        for (int i = 0; i < tokenTypesList.Count; ++i)
+        {
+            if (this.input_token_list[0].getType().Equals(tokenTypesList[i].ToString()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
     private void clearCurrentPosition(){
         if (this.input_token_list.Count > 0) {
@@ -1153,6 +1173,7 @@ public class Syntatic
             this.input_token_list.RemoveAt(0);
         }
     }
+    
     private Tuple<int, int> moveAndGetTrackingTokenPosition()
     {
         int line = this.tracking_token.getPositionInt().Item1;
