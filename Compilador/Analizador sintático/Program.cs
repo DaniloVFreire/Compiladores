@@ -16,7 +16,7 @@ namespace CompilerS
             //TestGenerator example = new TestGenerator();
             //example.FS();
             //Console.ReadLine();
-            Utils utils = new Utils(true);
+            Utils utils = new Utils(false);
             Compiler compiler_instance = new Compiler(utils);
             compiler_instance.RunCompilation();
         }

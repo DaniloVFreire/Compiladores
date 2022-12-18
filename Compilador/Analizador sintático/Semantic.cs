@@ -7,6 +7,7 @@ public class Semantic
 {
     List<string> allyTeam = new List<string>();
     List<string> enemyTeam = new List<string>();
+
     public Semantic()
     {
         allyTeam = IniciarAllyTeam();
@@ -16,24 +17,24 @@ public class Semantic
 
     public string Execution(List<Token> token_list_input)
     {
-            foreach (Token token in token_list_input)
+        foreach (Token token in token_list_input)
+        {
+            if (token.getType().Equals("ally"))
             {
-                if (token.getType().Equals("ally"))
-                {
-                    string saida = CheckAlly(token, "allyNa0");
+                string saida = CheckAlly(token, "allyNa0");
 
-                    if (saida != null) return "ERROR: "+saida;
-                }
-                else if (token.getType().Equals("ask"))
+                if (saida != null) return "ERROR: "+saida;
+            }
+            else if (token.getType().Equals("ask"))
+            {
+                if (token.getValue().Equals("askAction"))
                 {
-                    if (token.getValue().Equals("askAction"))
-                    {
-                        string saida = CheckAction(token_list_input, token, token_list_input.IndexOf(token));
+                    string saida = CheckAction(token_list_input, token, token_list_input.IndexOf(token));
 
-                        if (saida != null) return "ERROR: " + saida;
-                    }
+                    if (saida != null) return "ERROR: " + saida;
                 }
             }
+        }
 
         return "Semantico executado com sucesso";
     }

@@ -78,7 +78,7 @@ public class Lexical_analizer
             }
             if (Error)
             {
-                Console.WriteLine("Finalizando análize lexica com erro");
+                //Console.WriteLine("Finalizando análize lexica com erro");
                 //break;
             }
         }
@@ -157,7 +157,7 @@ public class Lexical_analizer
         }
         else
         {
-            Console.WriteLine("Token Com erro/não definido: " + word);
+            Console.WriteLine("Token com erro/não definido: " + word+"\n");
 
             //para parar caso encontre erro descomente as duas linhas abaixo
             this.Error=true;
@@ -196,5 +196,9 @@ public class Lexical_analizer
     public bool getError()
     {
         return this.Error;
+    }
+    public void setError(bool Error)
+    {
+        this.Error = Error;
     }
 }

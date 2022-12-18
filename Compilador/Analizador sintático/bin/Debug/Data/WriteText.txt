@@ -1,1 +1,3 @@
-help sayOk (allyNa0) .
+askAction sayOk (allyNc2) (allyNb1) .moveTowards (enemyGoal) .
+marked (self) .askInfo carryingBall (enemyNf5) (allyNc2) .sayNo (allyNc2) .
+sayPosition (self,8,4) .
