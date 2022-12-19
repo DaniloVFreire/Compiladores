@@ -19,7 +19,7 @@ public class Semantic
     {
         foreach (Token token in token_list_input)
         {
-            if (token.getType().Equals("ally"))
+            if (token.getType().Equals("ally") || token.getType().Equals("enemy"))
             {
                 string saida = CheckAlly(token, "allyNa0");
 
